@@ -1,0 +1,5 @@
+node_modules
+dist
+license-proxy/node_modules
+license-proxy/.wrangler
+.dev.vars
