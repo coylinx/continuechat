@@ -33,4 +33,4 @@ Free: 5 folders, pin, local search, 3 continue-chat/month (month key resets on t
 - Char budget (12k) vs real input limits; summary mode is a TODO stub.
 - Creem response fields (`status`, `instance.id`) against live sandbox; key status values other than "active".
 - Folder / pin / search / bulk export (MD/JSON/PDF) UI not built yet (storage layer only). Icons are placeholders.
-- Paywall checks run in content-script origin IndexedDB; usage counters are per-site origin — should move to background/extension origin (TODO).
+- (Fixed) Storage now lives in the background service worker; content scripts/popup use typed RPC (src/shared/rpc.ts). Continue counter is shared: 3/month total.

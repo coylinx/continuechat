@@ -2,7 +2,7 @@ import { FREE_CONTINUE_PER_MONTH, FREE_FOLDER_LIMIT } from './config';
 import { getContinueCount, listFolders } from './db';
 import { getLicense, isPremium } from './license';
 export type Gate = 'continue' | 'folder' | 'bulkExport';
-/** Returns true if allowed; false means show paywall card. Triggers: 4th continue/month, 6th folder, bulk export. */
+/** BACKGROUND ONLY (touches IndexedDB). Triggers: 4th continue/month (shared across sites), 6th folder, bulk export. */
 export async function canUse(g: Gate) {
   if (isPremium(await getLicense())) return true;
   if (g === 'continue') return (await getContinueCount()) < FREE_CONTINUE_PER_MONTH;

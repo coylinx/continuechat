@@ -1,7 +1,6 @@
 import type { PlatformAdapter } from '../adapters/types';
 import { buildContext } from '../../shared/continue';
-import { incContinueCount, upsertConversation } from '../../shared/db';
-import { canUse } from '../../shared/paywall';
+import { rpc } from '../../shared/rpc';
 // Placeholder UI — real design comes from Wonder later.
 export function renderPanel(a: PlatformAdapter, other: PlatformAdapter) {
   return (root: ShadowRoot) => {
@@ -9,15 +8,16 @@ export function renderPanel(a: PlatformAdapter, other: PlatformAdapter) {
       <div class="cc"><b>ContinueChat</b><div><button id="cont">Continue on other platform</button></div><div id="msg"></div></div>`;
     const msg = root.getElementById('msg')!;
     root.getElementById('cont')!.addEventListener('click', async () => {
-      if (!(await canUse('continue'))) { msg.textContent = 'Monthly free uses used up — upgrade ($4.99/mo or $39 lifetime).'; return; }
+      if (!(await rpc('paywall:canUse', { gate: 'continue' }))) { msg.textContent = 'Monthly free uses used up — upgrade ($4.99/mo or $39 lifetime).'; return; }
       const id = location.pathname.split('/').filter(Boolean).pop();
       if (!id) { msg.textContent = 'Open a conversation first.'; return; }
       try {
-        const conv = await a.getConversation(id); await upsertConversation(conv);
+        const conv = await a.getConversation(id); await rpc('db:upsertConversation', { conversation: conv });
         const { text } = buildContext(conv);
         // Prefill handoff: stash text, open other platform; its content script prefills on load.
+        const use = await rpc('usage:consumeContinue'); // shared counter across both sites
+        if (!use.ok) { msg.textContent = 'Monthly free uses used up — upgrade ($4.99/mo or $39 lifetime).'; return; }
         await chrome.storage.local.set({ pendingPrefill: { to: other.platform, text, at: Date.now() } });
-        await incContinueCount();
         window.open(other.newChatUrl, '_blank');
       } catch (e) { msg.textContent = 'Failed: ' + (e as Error).message; }
     });
