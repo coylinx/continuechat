@@ -29,12 +29,24 @@ const handlers: Handlers = {
   'usage:get': async () => ({ used: await db.getContinueCount(), limit: FREE_CONTINUE_PER_MONTH, premium: isPremium(await getLicense()) }),
   'usage:consumeContinue': async () => db.consumeContinue(isPremium(await getLicense()) ? Infinity : FREE_CONTINUE_PER_MONTH),
   'paywall:canUse': (r) => canUse(r.gate),
+  'continue:open': async (r) => {
+    if (!/^https:\/\/(chatgpt\.com|claude\.ai)\//.test(r.url)) throw new Error('bad url');
+    const tab = await chrome.tabs.create({ url: r.url, active: true });
+    await chrome.storage.session.set({ ['prefill:' + tab.id]: { text: r.text, at: Date.now() } });
+  },
+  'prefill:take': async (_r, sender) => {
+    const k = 'prefill:' + sender.tab?.id; const v = (await chrome.storage.session.get(k))[k] as { text: string; at: number } | undefined;
+    if (!v) return null; await chrome.storage.session.remove(k);
+    return Date.now() - v.at < 10 * 60_000 ? v.text : null;
+  },
   'ui:openOptions': async () => { await chrome.runtime.openOptionsPage(); },
 };
 chrome.runtime.onMessage.addListener((msg: RpcRequest, sender, reply) => {
   if (sender.id !== chrome.runtime.id) return false;
-  const h = handlers[msg?.type] as ((m: RpcRequest) => Promise<unknown>) | undefined;
+  const h = handlers[msg?.type] as ((m: RpcRequest, s: chrome.runtime.MessageSender) => Promise<unknown>) | undefined;
   if (!h) { reply({ ok: false, error: `unknown rpc ${String(msg?.type)}` }); return false; }
-  h(msg).then((data) => reply({ ok: true, data }), (e: Error) => reply({ ok: false, error: e.message }));
+  h(msg, sender).then((data) => reply({ ok: true, data }), (e: Error) => reply({ ok: false, error: e.message }));
   return true;
 });
+
+chrome.tabs.onRemoved.addListener((id) => void chrome.storage.session.remove('prefill:' + id));

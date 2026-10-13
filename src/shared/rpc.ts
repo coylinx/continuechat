@@ -20,6 +20,10 @@ export interface RpcMap {
   'usage:consumeContinue': { req: {}; res: { ok: boolean; used: number } };
   'paywall:canUse': { req: { gate: Gate }; res: boolean };
   'ui:openOptions': { req: {}; res: void };
+  /** Opens target site in a new tab right away and queues prefill text for that tab only. */
+  'continue:open': { req: { url: string; text: string }; res: void };
+  /** Called by content script on load; returns queued text for the sender's tab (once). */
+  'prefill:take': { req: {}; res: string | null };
 }
 export type RpcType = keyof RpcMap;
 export type RpcRequest = { [K in RpcType]: { type: K } & RpcMap[K]['req'] }[RpcType];
@@ -30,4 +34,4 @@ export async function rpc<K extends RpcType>(type: K, req: RpcMap[K]['req'] = {}
   if (!r.ok) throw new Error(r.error);
   return r.data;
 }
-export type Handlers = { [K in RpcType]: (req: Extract<RpcRequest, { type: K }>) => Promise<RpcMap[K]['res']> };
+export type Handlers = { [K in RpcType]: (req: Extract<RpcRequest, { type: K }>, sender: chrome.runtime.MessageSender) => Promise<RpcMap[K]['res']> };

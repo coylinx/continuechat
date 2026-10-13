@@ -95,8 +95,7 @@ export function renderPanel(a: PlatformAdapter, other: PlatformAdapter) {
           const use = await rpc('usage:consumeContinue'); // shared counter across both sites
           if (!use.ok) { paywall('quota'); return; }
           // Prefill handoff (text already trimmed to budget). The other tab fills the composer; it NEVER auto-sends.
-          await chrome.storage.local.set({ pendingPrefill: { to: other.platform, text: r.text, at: Date.now() } });
-          window.open(other.newChatUrl, '_blank'); close(); void draw0();
+          await rpc('continue:open', { url: other.newChatUrl, text: r.text }); close(); void draw0();
         };
       };
       await draw();
@@ -173,7 +172,7 @@ export function renderPanel(a: PlatformAdapter, other: PlatformAdapter) {
         <div class="row sec"><span class="sp">Folders · ${folders.length}${u.premium ? '' : '/' + FREE_FOLDER_LIMIT}</span><button class="ghost" data-newf title="New folder">＋</button></div>
         ${folders.map((f) => `<div class="item row" data-f="${f.id}"><span>${open.has(f.id) ? '▾' : '▸'} 📁</span><span class="sp">${esc(f.name)}</span><span class="mut sm">${f.conversationKeys.length}</span><button class="ghost mut sm" data-delf="${f.id}" title="Delete folder (chats are kept)">✕</button></div>
           ${open.has(f.id) ? `<div style="padding-left:22px">${f.conversationKeys.map(link).join('') || '<div class="mut sm">Empty</div>'}</div>` : ''}`).join('')}
-        <div class="row" style="margin-top:8px"><button class="ghost mut sm" data-exp>⇩ Export…</button><span class="sp"></span><button class="ghost mut sm" data-sync>↻ Sync</button></div>`}
+        <div class="row" style="margin-top:8px"><button class="ghost mut sm" data-exp>⇩ Export…</button><span class="sp"></span><span class="mut sm" data-st>${esc(syncStatus)}</span><button class="ghost mut sm" data-sync>↻ Sync</button></div>`}
         <div class="sm mut" style="margin-top:6px">🔒 Stored locally · No sign-up</div>`}`;
       const s = main.querySelector<HTMLInputElement>('input.search');
       if (s) { s.oninput = () => { query = s.value; clearTimeout((s as any)._t); (s as any)._t = setTimeout(async () => { await draw0(); const n = main.querySelector<HTMLInputElement>('input.search')!; n.focus(); n.setSelectionRange(n.value.length, n.value.length); }, 200); }; }
@@ -196,15 +195,30 @@ export function renderPanel(a: PlatformAdapter, other: PlatformAdapter) {
       main.querySelector<HTMLElement>('[data-exp]')?.addEventListener('click', () => void exportWizard());
       main.querySelector<HTMLElement>('[data-sync]')?.addEventListener('click', () => void sync().then(draw0));
     }
-    async function sync() { try { await rpc('db:upsertMetas', { metas: await a.listConversations(0, 100) }); } catch (e) { console.warn('[ContinueChat] sync failed', e); } }
+    let syncStatus = ''; let stT: number | undefined;
+    const setStatus = (t: string, ms = 4000) => { syncStatus = t; const el = main.querySelector('[data-st]'); if (el) el.textContent = t; clearTimeout(stT); if (ms) stT = window.setTimeout(() => setStatus('', 0), ms); };
+    async function sync() {
+      setStatus('Syncing…', 0);
+      try { const metas = await a.listConversations(0, 100); await rpc('db:upsertMetas', { metas }); setStatus(`Synced ${metas.length} chats`); }
+      catch (e) { setStatus('Sync failed: ' + (e as Error).message, 8000); console.warn('[ContinueChat] sync failed', e); }
+    }
     void draw0(); void sync().then(draw0);
     let last = location.pathname; setInterval(() => { if (location.pathname !== last) { last = location.pathname; void draw0(); } }, 1000);
   };
 }
 
-/** On the target site: fill the composer with the pending context. Never clicks send. */
+/** On the target tab: take queued text (per-tab) and fill the composer as soon as it appears. Never clicks send. */
 export async function consumePendingPrefill(a: PlatformAdapter) {
-  const { pendingPrefill: p } = await chrome.storage.local.get('pendingPrefill');
-  if (!p || p.to !== a.platform || Date.now() - p.at > 5 * 60_000) return;
-  for (let i = 0; i < 30; i++) { if (a.getInputBox() && a.prefill(p.text)) { await chrome.storage.local.remove('pendingPrefill'); return; } await new Promise((r) => setTimeout(r, 500)); }
+  const text = await rpc('prefill:take').catch(() => null); if (!text) return;
+  await new Promise<void>((done) => {
+    let finished = false;
+    const tryFill = () => {
+      if (finished) return; const el = a.getInputBox(); if (!el) return;
+      // Wait a beat so the editor finishes hydrating, then verify the text landed.
+      setTimeout(() => { if (finished) return; a.prefill(text); if ((el.textContent ?? (el as HTMLTextAreaElement).value ?? '').length > 0) { finished = true; mo.disconnect(); clearInterval(iv); done(); } }, 300);
+    };
+    const mo = new MutationObserver(tryFill); mo.observe(document.documentElement, { childList: true, subtree: true });
+    const iv = setInterval(tryFill, 1000); tryFill();
+    setTimeout(() => { finished = true; mo.disconnect(); clearInterval(iv); done(); }, 60_000);
+  });
 }
