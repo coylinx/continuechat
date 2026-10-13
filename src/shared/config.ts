@@ -1,5 +1,5 @@
 /** Single config constant for the license proxy (also mirrored in scripts/config.mjs for manifest). */
-export const LICENSE_PROXY_ORIGIN = 'https://license.continuechat.example';
+export const LICENSE_PROXY_ORIGIN = 'https://continuechat-license-proxy.costacruz896.workers.dev';
 /** TODO: real Creem checkout links. */
 export const CHECKOUT_MONTHLY_URL = 'https://www.creem.io/checkout/TODO_MONTHLY';
 export const CHECKOUT_LIFETIME_URL = 'https://www.creem.io/checkout/TODO_LIFETIME';

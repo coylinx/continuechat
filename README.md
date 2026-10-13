@@ -36,3 +36,6 @@ Free: 5 folders, pin, local search, 3 continue-chat/month (month key resets on t
 - Summary mode (stub). PDF = browser print dialog ("Save as PDF"); bulk export = one combined file, not a zip.
 - Creem response fields vs live sandbox; checkout URLs are placeholders (src/shared/config.ts). Icons are placeholders.
 - Storage lives in the background service worker (typed RPC, src/shared/rpc.ts); continue counter shared: 3/month total.
+
+## License proxy deployment
+Deployed (Oct 13) to https://continuechat-license-proxy.costacruz896.workers.dev — no CREEM_API_KEY yet, so POST /activate|/validate return 503 "license service not configured"; GET /health reports `configured`. Base: test-api.creem.io. Set key later: `wrangler secret put CREEM_API_KEY`. Restrict CORS by setting ALLOWED_EXTENSION_IDS once the store extension ID is known.

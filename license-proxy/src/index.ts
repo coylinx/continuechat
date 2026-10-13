@@ -5,7 +5,7 @@
  *   POST {base}/v1/licenses/validate  body {key, instance_id}    header x-api-key
  * Response has `status` (e.g. "active") and `instance` object with `id`; exact field names UNVERIFIED against live sandbox.
  */
-export interface Env { CREEM_API_KEY: string; CREEM_API_BASE: string; ALLOWED_EXTENSION_IDS: string; }
+export interface Env { CREEM_API_KEY?: string; CREEM_API_BASE: string; ALLOWED_EXTENSION_IDS: string; }
 
 function cors(origin: string | null, env: Env): Record<string, string> {
   if (!origin?.startsWith('chrome-extension://')) return {};
@@ -16,16 +16,19 @@ function cors(origin: string | null, env: Env): Record<string, string> {
 const json = (b: unknown, status: number, h: Record<string, string>) => new Response(JSON.stringify(b), { status, headers: { 'content-type': 'application/json', ...h } });
 
 async function creem(env: Env, path: string, body: object) {
-  const r = await fetch(`${env.CREEM_API_BASE}${path}`, { method: 'POST', headers: { 'content-type': 'application/json', 'x-api-key': env.CREEM_API_KEY }, body: JSON.stringify(body) });
+  const r = await fetch(`${env.CREEM_API_BASE}${path}`, { method: 'POST', headers: { 'content-type': 'application/json', 'x-api-key': env.CREEM_API_KEY ?? '' }, body: JSON.stringify(body) });
   return { status: r.status, data: (await r.json().catch(() => ({}))) as { status?: string; instance?: { id?: string }; message?: string } };
 }
 
 export default {
   async fetch(req: Request, env: Env): Promise<Response> {
+    const path0 = new URL(req.url).pathname;
+    if (req.method === 'GET' && path0 === '/health') return json({ ok: true, configured: !!env.CREEM_API_KEY, base: env.CREEM_API_BASE }, 200, {});
     const h = cors(req.headers.get('origin'), env);
     if (!h['access-control-allow-origin']) return json({ error: 'forbidden origin' }, 403, {});
     if (req.method === 'OPTIONS') return new Response(null, { status: 204, headers: h });
     if (req.method !== 'POST') return json({ error: 'method' }, 405, h);
+    if (!env.CREEM_API_KEY) return json({ error: 'license service not configured' }, 503, h);
     const path = new URL(req.url).pathname;
     const b = (await req.json().catch(() => ({}))) as { key?: string; instanceId?: string; instanceName?: string };
     if (!b.key || b.key.length > 200) return json({ error: 'key required' }, 400, h);

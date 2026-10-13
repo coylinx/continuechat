@@ -26,4 +26,7 @@ pre.prev{white-space:pre-wrap;border:1px solid var(--line);border-radius:10px;pa
 .opt{border:1px solid var(--line);border-radius:12px;padding:10px;margin:6px 0;cursor:pointer}.opt.on{border:2px solid var(--fg)}
 .price{flex:1;border:1px solid var(--line);border-radius:12px;padding:10px;cursor:pointer}.price.on{border:2px solid var(--fg)}
 ul.chk{list-style:none;padding:0;margin:8px 0}ul.chk li:before{content:"✓  "}
+@keyframes ccspin{to{transform:rotate(360deg)}}.spin{display:inline-block;animation:ccspin .8s linear infinite}
+.stline{font-size:11px;margin-top:4px;transition:opacity .4s}.stline.ok{color:var(--mut)}.stline.gone{opacity:0}
+.stline.fail{color:#d93025}.stline.fail a{color:inherit;font-weight:600}
 `;

@@ -164,6 +164,7 @@ export function renderPanel(a: PlatformAdapter, other: PlatformAdapter) {
       const link = (k: string) => { const s = byKey.get(k); if (!s) return ''; return `<div class="item" data-go="${esc(k)}" title="${esc(s.title)}">${esc(s.title)}${s.platform !== a.platform ? ` <span class="mut sm">· ${PLATFORM_LABEL[s.platform]}</span>` : ''}</div>`; };
       const results = query ? await rpc('db:search', { query }) : [];
       main.innerHTML = `<div class="row"><div class="logo">↪</div><span class="brand sp">ContinueChat</span><span class="pill">${left}</span>${floating ? `<button class="ghost" data-col>${collapsed ? '▴' : '▾'}</button>` : ''}</div>
+        <div data-st>${statusHTML()}</div>
         ${collapsed ? '' : `<input class="search" placeholder="Search all chats" value="${esc(query)}">
         ${query ? `<div class="sec">Results</div>${results.map((r) => link(r.key)).join('') || '<div class="mut sm">No matches</div>'}` : `
         ${curKey ? `<div class="row" style="gap:4px;flex-wrap:wrap"><button class="pri" data-cont>↪ Continue</button><button data-pin>${pins.some((p) => p.key === curKey) ? 'Unpin' : '📌 Pin'}</button>
@@ -172,7 +173,7 @@ export function renderPanel(a: PlatformAdapter, other: PlatformAdapter) {
         <div class="row sec"><span class="sp">Folders · ${folders.length}${u.premium ? '' : '/' + FREE_FOLDER_LIMIT}</span><button class="ghost" data-newf title="New folder">＋</button></div>
         ${folders.map((f) => `<div class="item row" data-f="${f.id}"><span>${open.has(f.id) ? '▾' : '▸'} 📁</span><span class="sp">${esc(f.name)}</span><span class="mut sm">${f.conversationKeys.length}</span><button class="ghost mut sm" data-delf="${f.id}" title="Delete folder (chats are kept)">✕</button></div>
           ${open.has(f.id) ? `<div style="padding-left:22px">${f.conversationKeys.map(link).join('') || '<div class="mut sm">Empty</div>'}</div>` : ''}`).join('')}
-        <div class="row" style="margin-top:8px"><button class="ghost mut sm" data-exp>⇩ Export…</button><span class="sp"></span><span class="mut sm" data-st>${esc(syncStatus)}</span><button class="ghost mut sm" data-sync>↻ Sync</button></div>`}
+        <div class="row" style="margin-top:8px"><button class="ghost mut sm" data-exp>⇩ Export…</button><span class="sp"></span><button class="ghost mut sm" data-sync ${syncState === 'syncing' ? 'disabled' : ''}><span class="${syncState === 'syncing' ? 'spin' : ''}">↻</span> Sync</button></div>`}
         <div class="sm mut" style="margin-top:6px">🔒 Stored locally · No sign-up</div>`}`;
       const s = main.querySelector<HTMLInputElement>('input.search');
       if (s) { s.oninput = () => { query = s.value; clearTimeout((s as any)._t); (s as any)._t = setTimeout(async () => { await draw0(); const n = main.querySelector<HTMLInputElement>('input.search')!; n.focus(); n.setSelectionRange(n.value.length, n.value.length); }, 200); }; }
@@ -194,13 +195,26 @@ export function renderPanel(a: PlatformAdapter, other: PlatformAdapter) {
       main.querySelectorAll<HTMLElement>('[data-delf]').forEach((el) => el.onclick = async () => { if (confirm('Delete this folder? Chats are kept.')) { await rpc('db:deleteFolder', { id: el.dataset.delf! }); void draw0(); } });
       main.querySelector<HTMLElement>('[data-exp]')?.addEventListener('click', () => void exportWizard());
       main.querySelector<HTMLElement>('[data-sync]')?.addEventListener('click', () => void sync().then(draw0));
+      paintStatus();
     }
-    let syncStatus = ''; let stT: number | undefined;
-    const setStatus = (t: string, ms = 4000) => { syncStatus = t; const el = main.querySelector('[data-st]'); if (el) el.textContent = t; clearTimeout(stT); if (ms) stT = window.setTimeout(() => setStatus('', 0), ms); };
+    let syncState: 'idle' | 'syncing' | 'ok' | 'fail' = 'idle'; let fadeT: number | undefined;
+    function statusHTML() {
+      if (syncState === 'ok') return `<div class="stline ok">Synced · just now</div>`;
+      if (syncState === 'fail') return `<div class="stline fail">Sync failed · <a href="#" data-retry>Retry</a></div>`;
+      return '';
+    }
+    const paintStatus = () => {
+      const el = main.querySelector('[data-st]'); if (el) el.innerHTML = statusHTML();
+      el?.querySelector<HTMLElement>('[data-retry]')?.addEventListener('click', (e) => { e.preventDefault(); void sync().then(draw0); });
+      const b = main.querySelector<HTMLButtonElement>('[data-sync]'); if (b) { b.disabled = syncState === 'syncing'; b.firstElementChild?.classList.toggle('spin', syncState === 'syncing'); }
+    };
     async function sync() {
-      setStatus('Syncing…', 0);
-      try { const metas = await a.listConversations(0, 100); await rpc('db:upsertMetas', { metas }); setStatus(`Synced ${metas.length} chats`); }
-      catch (e) { setStatus('Sync failed: ' + (e as Error).message, 8000); console.warn('[ContinueChat] sync failed', e); }
+      if (syncState === 'syncing') return; syncState = 'syncing'; clearTimeout(fadeT); paintStatus();
+      try {
+        await rpc('db:upsertMetas', { metas: await a.listConversations(0, 100) }); syncState = 'ok';
+        fadeT = window.setTimeout(() => { main.querySelector('.stline.ok')?.classList.add('gone'); fadeT = window.setTimeout(() => { syncState = 'idle'; paintStatus(); }, 400); }, 2000);
+      } catch (e) { syncState = 'fail'; console.warn('[ContinueChat] sync failed', e); }
+      paintStatus();
     }
     void draw0(); void sync().then(draw0);
     let last = location.pathname; setInterval(() => { if (location.pathname !== last) { last = location.pathname; void draw0(); } }, 1000);
