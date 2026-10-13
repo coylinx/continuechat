@@ -26,11 +26,13 @@ Proxy (later): `cd license-proxy && npm i && npx wrangler secret put CREEM_API_K
 ## Rules
 Free: 5 folders, pin, local search, 3 continue-chat/month (month key resets on the 1st). Premium ($4.99/mo / $39 lifetime, Creem license): unlimited folders & continue, bulk export. Paywall at 4th continue, 6th folder, bulk export. Offline grace 7 days; expiry only locks premium, never deletes data.
 
-## UNVERIFIED / TODO
-- ChatGPT: `/api/auth/session` token + `/backend-api/conversations`, `/backend-api/conversation/{id}` shapes.
-- Claude: `/api/organizations`, `/api/organizations/{org}/chat_conversations[/{id}]` shapes & query params.
-- Sidebar anchor selectors and input-box selectors on both sites; ProseMirror prefill via execCommand.
-- Char budget (12k) vs real input limits; summary mode is a TODO stub.
-- Creem response fields (`status`, `instance.id`) against live sandbox; key status values other than "active".
-- Folder / pin / search / bulk export (MD/JSON/PDF) UI not built yet (storage layer only). Icons are placeholders.
-- (Fixed) Storage now lives in the background service worker; content scripts/popup use typed RPC (src/shared/rpc.ts). Continue counter is shared: 3/month total.
+## Verified (real sites, Oct 13)
+- ChatGPT: /api/auth/session token, /backend-api/conversations, /backend-api/conversation/{id}; sidebar nav[aria-label="Chat history"]; composer div.ProseMirror[role=textbox] + execCommand insertText.
+- Claude: /api/organizations (chat-capable org), chat_conversations list + detail (tree=True&rendering_mode=messages, attachments.extracted_content); sidebar aside[aria-label="Sidebar"] / data-testid sidebar*; composer div[data-testid="chat-input"].ProseMirror.
+
+## Still unverified / TODO
+- The built extension end-to-end in Chrome (panel placement inside sidebars, prefill handoff after opening a new tab).
+- ChatGPT pagination beyond 100; Claude list pagination; Claude branch walking (parent_message_uuid).
+- Summary mode (stub). PDF = browser print dialog ("Save as PDF"); bulk export = one combined file, not a zip.
+- Creem response fields vs live sandbox; checkout URLs are placeholders (src/shared/config.ts). Icons are placeholders.
+- Storage lives in the background service worker (typed RPC, src/shared/rpc.ts); continue counter shared: 3/month total.
