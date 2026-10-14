@@ -37,13 +37,13 @@ export function renderPanel(a: PlatformAdapter, other: PlatformAdapter) {
 
     // ---------- Paywall card (05a/b/c) ----------
     function paywall(kind: 'quota' | 'folder' | 'export') {
-      const title = { quota: 'You used all 3 continues this month', folder: `You've reached ${FREE_FOLDER_LIMIT} folders`, export: 'Batch export is a Pro feature' }[kind];
+      const title = { quota: 'You used all 3 continues this month', folder: `You've reached ${FREE_FOLDER_LIMIT} folders`, export: 'Batch export to Markdown/PDF is a Pro feature' }[kind];
       const sub = { quota: `Free continues reset on ${nextMonth1()}. ContinueChat Pro keeps this chat going in ${PLATFORM_LABEL[other.platform]} right now.`,
-        folder: 'ContinueChat Pro gives you unlimited folders. Your existing folders stay as they are.', export: 'Export many chats at once to Markdown, JSON or PDF with ContinueChat Pro.' }[kind];
+        folder: 'ContinueChat Pro gives you unlimited folders. Your existing folders stay as they are.', export: 'Exporting several chats as JSON stays free. ContinueChat Pro exports them to Markdown or PDF in one go.' }[kind];
       let plan: 'm' | 'l' = 'l';
       const ov = modal(`<div class="row"><div class="logo">↪</div><span class="sp"></span><button class="ghost" data-x>✕</button></div>
         <h2 style="margin-top:10px">${title}</h2><p class="mut">${sub}</p>
-        <ul class="chk"><li>Unlimited continues</li><li>Unlimited folders</li><li>Batch export to Markdown, JSON, PDF</li></ul>
+        <ul class="chk"><li>Unlimited continues</li><li>Unlimited folders</li><li>Batch export to Markdown, PDF</li></ul>
         <div class="row"><div class="price" data-p="m"><div class="mut sm">Monthly</div><b style="font-size:18px">$4.99</b><span class="mut">/mo</span></div>
         <div class="price on" data-p="l"><div class="mut sm">Lifetime · pay once</div><b style="font-size:18px">$39</b></div></div>
         <button class="pri" style="width:100%;margin-top:12px" data-up>Upgrade to Pro</button>
@@ -118,18 +118,21 @@ export function renderPanel(a: PlatformAdapter, other: PlatformAdapter) {
         $('[data-x]', dlg).onclick = close;
         $('[data-next]', dlg).onclick = async () => {
           if (!sel.size) return;
-          if (sel.size > 1 && !(await rpc('paywall:canUse', { gate: 'bulkExport' }))) { paywall('export'); return; }
+          if (sel.size > 1 && fmt !== 'json' && !(await rpc('paywall:canUse', { gate: 'bulkExport' }))) fmt = 'json'; // default to the free format
           step2();
         };
       };
-      const step2 = () => {
+      const step2 = async () => {
+        const proLocked = sel.size > 1 && !(await rpc('paywall:canUse', { gate: 'bulkExport' }));
         const opts = [['md', 'Markdown', 'Readable, works in Notion and Obsidian'], ['json', 'JSON', 'Full structure, for backups and scripts'], ['pdf', 'PDF', 'Ready to share or print']] as const;
         dlg.innerHTML = `<div class="row"><span class="mut sm sp">Step 2 of 3</span><button class="ghost" data-x>✕</button></div><h2>Choose a format</h2>
-          ${opts.map(([k, t, d]) => `<div class="opt ${fmt === k ? 'on' : ''}" data-f="${k}"><b>${t}</b><div class="mut sm">${d}</div></div>`).join('')}
+          ${opts.map(([k, t, d]) => `<div class="opt ${fmt === k ? 'on' : ''}" data-f="${k}"><b>${t}</b>${proLocked && k !== 'json' ? ' <span class="pill">Pro</span>' : k === 'json' && sel.size > 1 ? ' <span class="pill">Free</span>' : ''}<div class="mut sm">${d}</div></div>`).join('')}
           <div class="row" style="margin-top:8px"><button class="ghost" data-back>Back</button><span class="sp"></span><button class="pri" data-go>Export ${sel.size} chat${sel.size > 1 ? 's' : ''}</button></div>`;
-        dlg.querySelectorAll<HTMLElement>('[data-f]').forEach((el) => el.onclick = () => { fmt = el.dataset.f as typeof fmt; step2(); });
+        dlg.querySelectorAll<HTMLElement>('[data-f]').forEach((el) => el.onclick = () => { fmt = el.dataset.f as typeof fmt; void step2(); });
         $('[data-x]', dlg).onclick = close; $('[data-back]', dlg).onclick = step1;
         $('[data-go]', dlg).onclick = async () => {
+          // Pricing rule: multi-chat JSON is free; multi-chat Markdown/PDF is Pro.
+          if (sel.size > 1 && fmt !== 'json' && !(await rpc('paywall:canUse', { gate: 'bulkExport' }))) { paywall('export'); return; }
           $('[data-go]', dlg).textContent = 'Exporting…';
           const out: Conversation[] = []; const failed: string[] = [];
           for (const k of sel) {
@@ -217,7 +220,7 @@ export function renderPanel(a: PlatformAdapter, other: PlatformAdapter) {
       paintStatus();
     }
     void draw0(); void sync().then(draw0);
-    let last = location.pathname; setInterval(() => { if (location.pathname !== last) { last = location.pathname; void draw0(); } }, 1000);
+    let last = location.pathname; const iv = setInterval(() => { if (!root.host.isConnected) { clearInterval(iv); return; } if (location.pathname !== last) { last = location.pathname; void draw0(); } }, 1000);
   };
 }
 
