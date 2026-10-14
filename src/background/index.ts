@@ -39,6 +39,7 @@ const handlers: Handlers = {
     if (!v) return null; await chrome.storage.session.remove(k);
     return Date.now() - v.at < 10 * 60_000 ? v.text : null;
   },
+  'db:wipeAll': async () => { await db.wipeAll(); await chrome.storage.local.clear(); await chrome.storage.session.clear(); },
   'ui:openOptions': async () => { await chrome.runtime.openOptionsPage(); },
 };
 chrome.runtime.onMessage.addListener((msg: RpcRequest, sender, reply) => {

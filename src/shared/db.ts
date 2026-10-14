@@ -31,6 +31,8 @@ export async function upsertMetas(metas: ConversationMeta[]) {
 export async function getStored(key: string) { return (await dbp).get('conversations', key); }
 export async function listStored() { return (await dbp).getAll('conversations'); }
 
+/** Deletes ALL local ContinueChat data (conversations index, folders, pins, usage). */
+export async function wipeAll() { const db = await dbp; for (const s of ['conversations', 'folders', 'pins', 'usage'] as const) await db.clear(s); invalidateSearch(); }
 export async function listFolders() { return (await dbp).getAll('folders'); }
 export async function putFolder(f: Folder) { return (await dbp).put('folders', f); }
 export async function deleteFolder(id: string) { return (await dbp).delete('folders', id); } // conversations untouched

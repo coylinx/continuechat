@@ -19,6 +19,7 @@ export interface RpcMap {
   /** Atomic check + increment of the shared monthly continue counter. */
   'usage:consumeContinue': { req: {}; res: { ok: boolean; used: number } };
   'paywall:canUse': { req: { gate: Gate }; res: boolean };
+  'db:wipeAll': { req: {}; res: void };
   'ui:openOptions': { req: {}; res: void };
   /** Opens target site in a new tab right away and queues prefill text for that tab only. */
   'continue:open': { req: { url: string; text: string }; res: void };
