@@ -1,5 +1,0 @@
-import{r as e}from"./rpc-DEtVyFD2.js";const p=document.getElementById("app");async function o(){const t=await e("license:get"),{used:s,limit:n,premium:c}=await e("usage:get");p.innerHTML=`<div style="font-size:11px;opacity:.7">🔒 本地存储 · 无需注册</div><h3 style="margin:6px 0">ContinueChat</h3>
-    ${c?`<p><b>ContinueChat Pro is active</b>${t.status==="grace"?" (offline grace)":""}</p>`:`<p>Continues this month: ${Math.max(0,n-s)} of ${n} left</p>
-    <p style="font-size:12px;opacity:.7">License: ${t.status}${t.message?" ("+t.message+")":""}</p>
-    <input id="k" placeholder="License key" style="width:100%;margin-bottom:6px"><button id="a">Activate Pro</button> <span id="s"></span>`}
-    <p><a href="#" id="o">Settings</a></p>`,document.getElementById("o").onclick=()=>chrome.runtime.openOptionsPage();const i=document.getElementById("a");i&&(i.onclick=async()=>{const a=document.getElementById("k").value.trim();a&&(document.getElementById("s").textContent="Verifying…",await e("license:activate",{key:a}),o())})}o();

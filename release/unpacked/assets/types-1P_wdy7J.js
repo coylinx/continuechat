@@ -1,0 +1,1 @@
+const c=["chatgpt","claude"],s=(t,a)=>`${t}:${a}`,e={chatgpt:"ChatGPT",claude:"Claude"},o={chatgpt:"https://chatgpt.com/",claude:"https://claude.ai/new"},h=t=>t==="chatgpt"||t==="claude";export{o as N,c as P,e as a,s as c,h as i};

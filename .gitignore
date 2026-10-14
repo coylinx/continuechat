@@ -3,3 +3,4 @@ dist
 license-proxy/node_modules
 license-proxy/.wrangler
 .dev.vars
+.claude/settings.local.json

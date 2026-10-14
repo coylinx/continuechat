@@ -1,12 +1,14 @@
 {
   "name": "continuechat",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "tsc --noEmit && vite build && CC_ENTRY=chatgpt vite build && CC_ENTRY=claude vite build && node scripts/copy-manifest.mjs",
+    "build": "node scripts/build.mjs",
     "typecheck": "tsc --noEmit",
-    "test": "esbuild tests/continue.test.ts --bundle --platform=node --format=esm --outfile=node_modules/.cache/t.mjs --log-level=error && node node_modules/.cache/t.mjs"
+    "test": "node scripts/test.mjs",
+    "pack": "node scripts/build.mjs && node scripts/pack.mjs",
+    "dev": "vite --config dev/vite.config.ts"
   },
   "dependencies": {
     "idb": "^8.0.0",
@@ -14,6 +16,8 @@
   },
   "devDependencies": {
     "@types/chrome": "^0.0.280",
+    "esbuild": "^0.21.5",
+    "fake-indexeddb": "^6.2.5",
     "typescript": "^5.6.0",
     "vite": "^5.4.0"
   }

@@ -1,0 +1,4 @@
+{
+  "appName": { "message": "ContinueChat" },
+  "appDesc": { "message": "整理 AI 对话，并在另一个平台接着聊。支持 ChatGPT 和 Claude。数据仅存本地，无需注册。" }
+}
