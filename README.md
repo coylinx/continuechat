@@ -61,9 +61,11 @@ Free: 5 folders, pin, local search, 3 continue-chat/month (month key resets on t
 - On the live sites: panel placement inside the current sidebars, prefill in a freshly opened tab, the print page.
 - ChatGPT pagination past 100 (offset param used before) and Claude list `offset` (unverified; the stop-guard makes it safe). Claude `current_leaf_message_uuid` and the `lastActiveOrg` cookie (used only when present).
 - Summary mode (stub). Chats deleted on the site stay in the local index.
-- Creem response fields vs live sandbox; checkout URLs are placeholders (`src/shared/config.ts`) — Upgrade shows "checkout not open yet" until set.
+- Creem: no real purchase yet. Activation with a real key, and whether a Monthly key stops validating after the subscription is cancelled/expires (keys are set to never expire; if Creem doesn't disable them, add a `subscription.expired` webhook that deactivates the key).
+- Creem account review: requested changes addressed by continuechat.coylin.com (pricing, /privacy, /terms); re-review not confirmed yet.
 - Storage lives in the background service worker (typed RPC, `src/shared/rpc.ts`); continue counter shared: 3/month total.
 
 ## License proxy deployment
-Deployed (Oct 13) to https://continuechat-license-proxy.costacruz896.workers.dev — no CREEM_API_KEY yet, so POST /activate|/validate return 503 "license service not configured"; GET /health reports `configured`. Base: test-api.creem.io. Set key later: `wrangler secret put CREEM_API_KEY`. Restrict CORS by setting ALLOWED_EXTENSION_IDS once the store extension ID is known.
-`/deactivate` was added Oct 14 and is NOT deployed yet (`cd license-proxy && npx wrangler deploy`); until then "Remove license" just forgets the key locally.
+Live at https://continuechat-license-proxy.costacruz896.workers.dev (redeployed Oct 18 with `/deactivate`): base https://api.creem.io (live products), CREEM_API_KEY set as a secret (Creem key "coylin"), GET /health reports `configured: true`. Verified Oct 18: a fake license key gets Creem 400 through the proxy while a wrong API key gets 401, so the stored key is accepted.
+Creem products: Pro Monthly `prod_1H42djjBKg30qGfZO10tcC` ($4.99/mo subscription), Pro Lifetime `prod_37fWKMy4cdjhDTKpyZSrpT` ($39 one-time); both deliver a license key, 3 activations, no expiry. Payment links live in `src/shared/config.ts`.
+Deploy: `cd license-proxy && npx wrangler deploy` (wrangler 4; wrangler 3's OAuth login hung on this machine). If the local Clash proxy drops requests, prefix with `env -u HTTPS_PROXY -u HTTP_PROXY`. Logged in with minimal scopes: `npx wrangler login --scopes account:read user:read workers:write workers_scripts:write`. Restrict CORS by setting ALLOWED_EXTENSION_IDS once the store extension ID is known.

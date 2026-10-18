@@ -3,5 +3,5 @@ main = "src/index.ts"
 compatibility_date = "2026-10-01"
 # Secret (never commit): wrangler secret put CREEM_API_KEY
 [vars]
-CREEM_API_BASE = "https://test-api.creem.io"   # sandbox; production: https://api.creem.io
+CREEM_API_BASE = "https://api.creem.io"        # live products; sandbox: https://test-api.creem.io (needs a test-mode key)
 ALLOWED_EXTENSION_IDS = ""                      # comma-separated chrome extension IDs; empty = any chrome-extension:// (dev only)
