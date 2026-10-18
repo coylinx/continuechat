@@ -1,8 +1,8 @@
 /** Single config constant for the license proxy (also mirrored in scripts/config.mjs for manifest). */
 export const LICENSE_PROXY_ORIGIN = 'https://continuechat-license-proxy.costacruz896.workers.dev';
-/** TODO: real Creem checkout links. While they contain "TODO" the Upgrade buttons explain checkout isn't open yet. */
-export const CHECKOUT_MONTHLY_URL = 'https://www.creem.io/checkout/TODO_MONTHLY';
-export const CHECKOUT_LIFETIME_URL = 'https://www.creem.io/checkout/TODO_LIFETIME';
+/** Creem payment links (live products "ContinueChat Pro — Monthly" / "— Lifetime"). A link containing "TODO" makes Upgrade explain checkout isn't open yet. */
+export const CHECKOUT_MONTHLY_URL = 'https://www.creem.io/payment/prod_1H42djjBKg30qGfZO10tcC';
+export const CHECKOUT_LIFETIME_URL = 'https://www.creem.io/payment/prod_37fWKMy4cdjhDTKpyZSrpT';
 export const checkoutReady = (url: string) => !url.includes('TODO');
 export const PRICE_MONTHLY = '$4.99';
 export const PRICE_LIFETIME = '$39';
