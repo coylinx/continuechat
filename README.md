@@ -19,6 +19,8 @@ dev/                     local harness: fake ChatGPT/Claude pages + chrome.* moc
 tests/                   continue, search (CJK), export/markdown/zip, adapters (branches, pagination), db (fake-indexeddb), license, i18n
 license-proxy/           Cloudflare Worker → Creem license API
 site/                    privacy policy page (also copied into the extension as privacy.html)
+site/www/                product site https://continuechat.coylin.com (landing + pricing, /privacy, /terms); `bash site/deploy.sh` → nginx on the sg host,
+                         config in site/nginx/ (certbot webroot, cert-name continuechat.coylin.com)
 ```
 
 ## Build & load

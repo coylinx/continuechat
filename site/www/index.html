@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ContinueChat — Continue any AI chat in ChatGPT or Claude</title>
+<meta name="description" content="ContinueChat is a Chrome extension that moves a conversation between ChatGPT and Claude in one click, plus folders, pins, fast search and export. Free plan; Pro $4.99/month or $39 lifetime.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="ContinueChat — Start in ChatGPT. Continue in Claude.">
+<meta property="og:description" content="Move a conversation between ChatGPT and Claude in one click. Folders, pins, search and export. Stored in your browser.">
+<meta property="og:url" content="https://continuechat.coylin.com/">
+<link rel="canonical" href="https://continuechat.coylin.com/">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="mark" viewBox="0 0 32 32">
+    <rect width="32" height="32" rx="8" style="fill:var(--mark-bg)"/>
+    <path d="M10.5 8h11a3.5 3.5 0 0 1 3.5 3.5v6a3.5 3.5 0 0 1-3.5 3.5H14l-4.6 3.9c-.5.4-1.2 0-1.2-.6V21.1A3.5 3.5 0 0 1 7 17.5v-6A3.5 3.5 0 0 1 10.5 8z" style="fill:var(--mark-fg)"/>
+    <path d="M11.5 14.5h8.2m-3.2-3.3 3.3 3.3-3.3 3.3" fill="none" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" style="stroke:var(--mark-bg)"/>
+  </symbol>
+  <symbol id="check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+</svg>
+
+<header class="top" id="top">
+  <div class="wrap">
+    <a class="logo" href="/" aria-label="ContinueChat home"><svg><use href="#mark"/></svg>ContinueChat</a>
+    <nav aria-label="Main">
+      <a href="#how">How it works</a>
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <a class="btn btn-pri btn-sm" href="#install">Get ContinueChat</a>
+  </div>
+</header>
+
+<main id="main">
+  <section class="hero">
+    <div class="wrap">
+      <span class="eyebrow"><span class="pill">Chrome</span>An extension for ChatGPT and Claude</span>
+      <h1>Start in ChatGPT.<br><em>Continue in Claude.</em></h1>
+      <p class="lede">Or the other way round. ContinueChat packs up the conversation, opens the other assistant and fills in the message box for you — you just read it and press send. Plus folders, pins, search and export, all kept in your browser.</p>
+      <div class="cta">
+        <a class="btn btn-pri btn-lg" href="#install">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11m-4.5-4.5L12 15l4.5-4.5M5 20h14"/></svg>
+          Add to Chrome — free
+        </a>
+        <a class="btn btn-sec btn-lg" href="#pricing">See pricing</a>
+      </div>
+      <div class="reassure">
+        <span><svg aria-hidden="true"><use href="#check"/></svg>Free plan, no sign-up</span>
+        <span><svg aria-hidden="true"><use href="#check"/></svg>Chats never leave your browser</span>
+        <span><svg aria-hidden="true"><use href="#check"/></svg>Never sends anything for you</span>
+      </div>
+
+      <div class="demo" aria-hidden="true">
+        <div class="win">
+          <div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">chatgpt.com</span></div>
+          <div class="win-body">
+            <div class="msg me">Plan a 2-day trip to Hangzhou in spring.</div>
+            <div class="msg ai"><b>Day 1</b> — West Lake at sunrise, Lingyin Temple, then tea in Longjing village…<span class="bars"><i></i><i style="width:84%"></i></span></div>
+            <div class="msg me">Make day 2 less walking.</div>
+            <div class="msg ai"><span class="bars"><i></i><i style="width:62%"></i></span></div>
+            <span class="cc-chip"><svg><use href="#mark"/></svg>Continue in Claude</span>
+          </div>
+        </div>
+        <div class="handoff">
+          <svg class="arrow" viewBox="0 0 64 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h58m-8-8 8 8-8 8" stroke-dasharray="4 5"/></svg>
+          <span class="tag">4 turns · 2.1k chars</span>
+        </div>
+        <div class="win">
+          <div class="win-bar"><span class="dots"><i></i><i></i><i></i></span><span class="url">claude.ai</span></div>
+          <div class="win-body">
+            <p class="newchat">New chat</p>
+            <div class="composer">
+              <p><strong>Context from my earlier chat "Hangzhou spring trip" (last 4 turns):</strong> User: Plan a 2-day trip to Hangzhou in spring. AI: Day 1 — West Lake at sunrise, Lingyin Temple… User: Make day 2 less walking. AI: … Please continue from here.<span class="caret"></span></p>
+              <div class="composer-foot">
+                <span class="note"><svg><use href="#check"/></svg>Filled in — not sent</span>
+                <span class="send"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5m-6 6 6-6 6 6"/></svg></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="how" class="alt">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="kicker">How it works</span>
+        <h2>Switch assistants without starting over.</h2>
+        <p>One answer stalls, the other might nail it. ContinueChat carries the conversation across so you don't have to copy, paste and re-explain.</p>
+      </div>
+      <ol class="steps">
+        <li class="step"><h3>Click Continue</h3><p>Open any chat on chatgpt.com or claude.ai and press <strong>Continue</strong> in the ContinueChat panel.</p></li>
+        <li class="step"><h3>Choose how much to bring</h3><p>The last 4, 8, 12 or 20 turns — or all of it — trimmed to fit, without ever cutting a code block or table in half.</p></li>
+        <li class="step"><h3>Review and send</h3><p>The other assistant opens in a new tab with the message box already filled in. Edit if you like, then press send yourself.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="features">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="kicker">Features</span>
+        <h2>A tidy home for every AI conversation.</h2>
+        <p>ContinueChat adds a small panel to the sidebar of both sites. Everything it stores stays on your computer.</p>
+      </div>
+      <div class="features">
+        <div class="feature">
+          <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3 4 7l4 4M4 7h16M16 21l4-4-4-4M20 17H4"/></svg></span>
+          <h3>Continue across assistants</h3>
+          <p>Hand a conversation from ChatGPT to Claude or back, with attachments' text included and a size budget you control.</p>
+        </div>
+        <div class="feature">
+          <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5A2.5 2.5 0 0 1 5.5 5H9l2 2.5h7.5A2.5 2.5 0 0 1 21 10v7.5a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 17.5z"/></svg></span>
+          <h3>Folders and pins</h3>
+          <p>Group chats by project, pin the ones you come back to, and keep both sites' chats side by side in one list.</p>
+        </div>
+        <div class="feature">
+          <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg></span>
+          <h3>Search that actually finds it</h3>
+          <p>Instant local search over titles and the full text of chats you've opened — including Chinese and Japanese words mid-sentence.</p>
+        </div>
+        <div class="feature">
+          <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11m-4.5-4.5L12 15l4.5-4.5M5 20h14"/></svg></span>
+          <h3>Export to Markdown, JSON or PDF</h3>
+          <p>Save a chat with code blocks, tables and lists intact. Back up everything to one file and import it again anytime.</p>
+        </div>
+        <div class="feature">
+          <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="10.5" width="15" height="10" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg></span>
+          <h3>Private by design</h3>
+          <p>No account, no analytics, no servers holding your conversations. Delete all local data from Settings with one click.</p>
+        </div>
+        <div class="feature">
+          <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.4 2.4 3.5 5.2 3.5 8.5s-1.1 6.1-3.5 8.5c-2.4-2.4-3.5-5.2-3.5-8.5s1.1-6.1 3.5-8.5z"/></svg></span>
+          <h3>English and 简体中文</h3>
+          <p>The interface follows your browser's language, and the context it writes follows the language you choose.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="pricing" class="alt">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="kicker">Pricing</span>
+        <h2>Free to start. One small upgrade if you live in both.</h2>
+        <p>Every plan includes local search, pins and single-chat export. Pro removes the limits.</p>
+      </div>
+      <div class="plans">
+        <div class="plan">
+          <h3>Free</h3>
+          <div class="price"><b>$0</b><span>forever</span></div>
+          <p class="sub">Organize your chats and try continuing.</p>
+          <ul>
+            <li><svg><use href="#check"/></svg>3 continues per month</li>
+            <li><svg><use href="#check"/></svg>Up to 5 folders, unlimited pins</li>
+            <li><svg><use href="#check"/></svg>Local search, incl. Chinese/Japanese</li>
+            <li><svg><use href="#check"/></svg>Export any chat to Markdown, JSON or PDF</li>
+            <li><svg><use href="#check"/></svg>Full JSON backup and restore</li>
+          </ul>
+          <a class="btn btn-sec" href="#install">Get started</a>
+        </div>
+        <div class="plan">
+          <h3>Pro Monthly</h3>
+          <div class="price"><b>$4.99</b><span>/ month</span></div>
+          <p class="sub">For people who switch assistants every day. Cancel anytime.</p>
+          <ul>
+            <li><svg><use href="#check"/></svg>Unlimited continues</li>
+            <li><svg><use href="#check"/></svg>Unlimited folders</li>
+            <li><svg><use href="#check"/></svg>Bulk export to Markdown (.zip) and PDF</li>
+            <li><svg><use href="#check"/></svg>Everything in Free</li>
+          </ul>
+          <a class="btn btn-sec" href="#install">Get Pro Monthly</a>
+          <p class="how">Upgrade in the extension: Settings → License</p>
+        </div>
+        <div class="plan best">
+          <span class="badge">Best value</span>
+          <h3>Pro Lifetime</h3>
+          <div class="price"><b>$39</b><span>one-time</span></div>
+          <p class="sub">Pay once. Keep Pro for as long as ContinueChat is offered.</p>
+          <ul>
+            <li><svg><use href="#check"/></svg>Everything in Pro Monthly</li>
+            <li><svg><use href="#check"/></svg>All future updates included</li>
+            <li><svg><use href="#check"/></svg>No subscription to manage</li>
+          </ul>
+          <a class="btn btn-pri" href="#install">Get Pro Lifetime</a>
+          <p class="how">Upgrade in the extension: Settings → License</p>
+        </div>
+      </div>
+      <p class="fine">Prices in US dollars. Orders are processed by <a href="https://www.creem.io" rel="noopener">Creem</a>, our merchant of record, which handles payment, tax and receipts; sales tax or VAT may be added at checkout. If Pro isn't right for you, ask for a full refund within 14 days of your first purchase — see our <a href="/terms#refunds">Terms</a>.</p>
+    </div>
+  </section>
+
+  <section id="install-section">
+    <div class="wrap">
+      <div class="install" id="install">
+        <div>
+          <h2>Install ContinueChat in under a minute.</h2>
+          <p>Works in Google Chrome 116 or newer on Windows, macOS and Linux. The Chrome Web Store listing is on its way — until then, install it directly.</p>
+          <a class="btn btn-pri btn-lg" href="/download/continuechat-v0.2.0.zip" download>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11m-4.5-4.5L12 15l4.5-4.5M5 20h14"/></svg>
+            Download for Chrome
+          </a>
+          <p class="meta">Version 0.2.0 · .zip · about 90 KB</p>
+        </div>
+        <ol>
+          <li><span>Unzip the downloaded file.</span></li>
+          <li><span>Open <code>chrome://extensions</code> and switch on <strong>Developer mode</strong> (top right).</span></li>
+          <li><span>Click <strong>Load unpacked</strong> and choose the unzipped folder.</span></li>
+          <li><span>Open chatgpt.com or claude.ai — the ContinueChat panel appears in the sidebar.</span></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq" class="alt">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="kicker">FAQ</span>
+        <h2>Questions, answered.</h2>
+      </div>
+      <div class="faq">
+        <details>
+          <summary>Does ContinueChat send messages for me?</summary>
+          <p>No. It fills in the message box on the other site and stops there. You read it, change it if you want, and press send yourself. If the box can't be filled, you get a "Copy context" button instead.</p>
+        </details>
+        <details>
+          <summary>Where are my chats stored?</summary>
+          <p>Only in your browser. There is no account and no server that stores your conversations, and there are no analytics. The one network request ContinueChat makes is to check a Pro license key. Details are in our <a href="/privacy">Privacy Policy</a>.</p>
+        </details>
+        <details>
+          <summary>What counts as a "continue"?</summary>
+          <p>Each time ContinueChat opens a chat on the other assistant with your context filled in. The Free plan includes 3 per month and resets on the 1st. A continue is only counted when the new tab actually opens.</p>
+        </details>
+        <details>
+          <summary>What happens if my Pro plan ends?</summary>
+          <p>Nothing is deleted. Your chats, folders and pins stay exactly as they are; only Pro actions (more continues, new folders past 5, bulk Markdown/PDF export) are locked until you renew.</p>
+        </details>
+        <details>
+          <summary>How do I cancel or get a refund?</summary>
+          <p>Cancel Pro Monthly anytime using the link in your Creem receipt email — you keep Pro until the end of the period you paid for. Within 14 days of your first purchase, email <a href="mailto:help@coylin.com">help@coylin.com</a> for a full refund. See the <a href="/terms#refunds">Terms</a> for details.</p>
+        </details>
+        <details>
+          <summary>Is ContinueChat made by OpenAI or Anthropic?</summary>
+          <p>No. ContinueChat is an independent product made by CoyLin Studio. It is not affiliated with, endorsed by or sponsored by OpenAI or Anthropic.</p>
+        </details>
+        <details>
+          <summary>Which browsers are supported?</summary>
+          <p>Google Chrome 116 or newer on desktop. Other Chromium-based browsers such as Edge and Brave usually work, but we don't officially test them yet.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <div class="about">
+        <a class="logo" href="/"><svg aria-hidden="true"><use href="#mark"/></svg>ContinueChat</a>
+        <p>Organize your ChatGPT and Claude chats and move a conversation from one to the other in a click. Made by CoyLin Studio.</p>
+      </div>
+      <nav aria-label="Footer">
+        <div><h4>Product</h4><ul><li><a href="#features">Features</a></li><li><a href="#pricing">Pricing</a></li><li><a href="#install">Install</a></li><li><a href="#faq">FAQ</a></li></ul></div>
+        <div><h4>Legal</h4><ul><li><a href="/privacy">Privacy Policy</a></li><li><a href="/terms">Terms of Service</a></li><li><a href="/terms#refunds">Refunds</a></li></ul></div>
+        <div><h4>Support</h4><ul><li><a href="mailto:help@coylin.com">help@coylin.com</a></li></ul></div>
+      </nav>
+    </div>
+    <div class="legal">
+      <span>© 2026 CoyLin Studio</span>
+      <span>ChatGPT is a trademark of OpenAI. Claude is a trademark of Anthropic. ContinueChat is not affiliated with either.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    var top = document.getElementById('top');
+    var on = function () { top.classList.toggle('scrolled', window.scrollY > 8); };
+    on(); window.addEventListener('scroll', on, { passive: true });
+  })();
+</script>
+</body>
+</html>
