@@ -6,7 +6,7 @@ export const CHECKOUT_LIFETIME_URL = 'https://www.creem.io/payment/prod_37fWKMy4
 export const checkoutReady = (url: string) => !url.includes('TODO');
 export const PRICE_MONTHLY = '$4.99';
 export const PRICE_LIFETIME = '$39';
-export const SUPPORT_EMAIL = 'help@coylin.com';
+export const SUPPORT_EMAIL = 'support@coylin.com';
 export const FREE_FOLDER_LIMIT = 5;
 export const FREE_CONTINUE_PER_MONTH = 3;
 export const REVALIDATE_EVERY_DAYS = 3;
