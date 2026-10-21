@@ -21,6 +21,8 @@ license-proxy/           Cloudflare Worker → Creem license API
 site/                    privacy policy page (also copied into the extension as privacy.html)
 site/www/                product site https://continuechat.coylin.com (landing + pricing, /privacy, /terms); `bash site/deploy.sh` → nginx on the sg host,
                          config in site/nginx/ (certbot webroot, cert-name continuechat.coylin.com)
+store-assets/            creem/ (product images) · cws/ (Chrome Web Store screenshots, promo tiles, listing.html = submission checklist with copy buttons)
+                         screenshots: `npm run dev`, then `node scripts/store-shots.mjs` (harness in `?showcase` mode, English UI)
 ```
 
 ## Build & load
@@ -62,7 +64,8 @@ Free: 5 folders, pin, local search, 3 continue-chat/month (month key resets on t
 - ChatGPT pagination past 100 (offset param used before) and Claude list `offset` (unverified; the stop-guard makes it safe). Claude `current_leaf_message_uuid` and the `lastActiveOrg` cookie (used only when present).
 - Summary mode (stub). Chats deleted on the site stay in the local index.
 - Creem: no real purchase yet. Activation with a real key, and whether a Monthly key stops validating after the subscription is cancelled/expires (keys are set to never expire; if Creem doesn't disable them, add a `subscription.expired` webhook that deactivates the key).
-- Creem account review: requested changes addressed by continuechat.coylin.com (pricing, /privacy, /terms); re-review not confirmed yet.
+- Creem account review: requested changes addressed by continuechat.coylin.com (pricing, /privacy, /terms); re-review requested Oct 18 (24–48 h).
+- Chrome Web Store: item `icdcndcollaclgcjnolpolgddbjijndj` (v0.2.2) submitted Oct 21, pending review. Once live: site download → store link (drop the zip + manual-install steps), and set ALLOWED_EXTENSION_IDS to that ID in license-proxy/wrangler.toml and redeploy (not before — zip installs have other IDs and would be refused).
 - Storage lives in the background service worker (typed RPC, `src/shared/rpc.ts`); continue counter shared: 3/month total.
 
 ## License proxy deployment

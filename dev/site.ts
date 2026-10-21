@@ -3,16 +3,18 @@ import './mock-chrome';
 import { boot } from '../src/content/boot';
 import { PLATFORM_LABEL, type Platform } from '../src/shared/types';
 import { fakeAdapter } from './fake-adapter';
-import { FIXTURES } from './fixtures';
+import { FIXTURES, SHOWCASE_ON } from './fixtures';
 
 const platform: Platform = location.pathname.startsWith('/claude') ? 'claude' : 'chatgpt';
 const other: Platform = platform === 'chatgpt' ? 'claude' : 'chatgpt';
 const a = fakeAdapter(platform);
 document.title = `Fake ${PLATFORM_LABEL[platform]} · ContinueChat dev`;
 if (localStorage.getItem('ccdev-dark') === '1') document.documentElement.classList.add('dark');
+if (SHOWCASE_ON) document.documentElement.classList.add('showcase'); // no dev toolbar, neutral sidebar heading
 
-const list = platform === 'chatgpt' ? '<div class="sidehead">Fake ChatGPT</div><nav aria-label="Chat history" id="list"></nav>'
-  : '<aside aria-label="Sidebar"><div class="sidehead">Fake Claude</div><div data-testid="sidebar-recents" id="list"></div></aside>';
+const head = SHOWCASE_ON ? 'Chats' : `Fake ${PLATFORM_LABEL[platform]}`;
+const list = platform === 'chatgpt' ? `<div class="sidehead">${head}</div><nav aria-label="Chat history" id="list"></nav>`
+  : `<aside aria-label="Sidebar"><div class="sidehead">${head}</div><div data-testid="sidebar-recents" id="list"></div></aside>`;
 const box = platform === 'chatgpt' ? '<div class="ProseMirror" contenteditable="true" role="textbox" id="box" data-placeholder="Ask anything"></div>'
   : '<div data-testid="chat-input" class="ProseMirror" contenteditable="true" id="box" data-placeholder="Reply to Claude…"></div>';
 document.body.innerHTML = `<div class="shell"><aside class="side" id="side">${list}</aside><main>
@@ -28,7 +30,7 @@ function renderList() {
 }
 function renderChat() {
   const c = FIXTURES[platform].find((x) => x.id === a.currentConversationId());
-  $('chat').innerHTML = c ? c.turns.map((t) => `<div class="msg ${t.role}"></div>`).join('') : `<div class="empty">New chat · pick one on the left</div>`;
+  $('chat').innerHTML = c ? c.turns.map((t) => `<div class="msg ${t.role}"></div>`).join('') : `<div class="empty">${SHOWCASE_ON ? 'New chat' : 'New chat · pick one on the left'}</div>`;
   if (c) [...$('chat').children].forEach((el, i) => { el.textContent = c.turns[i].text; });
   renderList();
 }

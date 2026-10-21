@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ContinueChat 上架清单</title>
+<style>
+  :root { --bg:#f6f4ee; --card:#fff; --ink:#111113; --ink2:#55545c; --ink3:#8a8892; --line:rgba(17,17,19,.1); --accent:#2f5bff; --ok:#188a55; color-scheme: light; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#0e0e11; --card:#18181d; --ink:#f2f2f5; --ink2:#b3b2bc; --ink3:#7d7c87; --line:rgba(255,255,255,.1); --accent:#7b98ff; --ok:#4cc98d; color-scheme: dark; } }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.6 system-ui,"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif; }
+  main { max-width: 900px; margin: 0 auto; padding: 32px 16px 80px; }
+  h1 { font-size: 28px; margin: 0; letter-spacing: -.02em; }
+  .lede { color: var(--ink2); margin: 8px 0 0; }
+  h2 { font-size: 19px; margin: 40px 0 6px; display:flex; align-items:center; gap:10px; }
+  h2 .n { display:inline-grid; place-items:center; width:26px; height:26px; border-radius:8px; background:var(--ink); color:var(--bg); font-size:14px; }
+  .where { color: var(--ink3); font-size: 13.5px; margin: 0 0 12px; }
+  .field { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:12px 14px; margin:10px 0; }
+  .field .head { display:flex; align-items:center; gap:10px; }
+  .field .label { font-weight:600; flex:1; }
+  .field .note { color:var(--ink2); font-size:13.5px; margin-top:2px; }
+  .val { margin-top:8px; white-space:pre-wrap; word-break:break-word; font:13.5px/1.55 ui-monospace,"SFMono-Regular",Menlo,monospace; background:color-mix(in srgb, var(--bg) 70%, transparent); border-radius:8px; padding:10px 12px; max-height:260px; overflow:auto; }
+  button.copy { font:inherit; font-size:13px; font-weight:600; border:1px solid var(--line); background:var(--card); color:var(--ink); border-radius:8px; padding:5px 12px; cursor:pointer; }
+  button.copy.done { color:var(--ok); border-color:var(--ok); }
+  .pick { display:inline-block; font-weight:600; background:color-mix(in srgb, var(--accent) 14%, transparent); color:var(--accent); border-radius:6px; padding:1px 8px; margin:2px 4px 2px 0; font-size:13.5px; }
+  .imgs { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:12px; margin-top:10px; }
+  figure { margin:0; background:var(--card); border:1px solid var(--line); border-radius:10px; padding:8px; }
+  figure img { width:100%; display:block; border-radius:6px; border:1px solid var(--line); }
+  figcaption { font-size:12px; color:var(--ink2); margin-top:6px; word-break:break-all; }
+  code { font-family:ui-monospace,Menlo,monospace; font-size:13px; background:color-mix(in srgb, var(--ink) 8%, transparent); padding:1px 5px; border-radius:5px; word-break:break-all; }
+  .warn { border-left:3px solid #d08a00; background:color-mix(in srgb, #d08a00 10%, transparent); padding:10px 14px; border-radius:8px; margin:14px 0; }
+</style>
+</head>
+<body>
+<main>
+  <h1>ContinueChat 上架 Chrome 应用商店清单</h1>
+  <p class="lede">在 <a href="https://chrome.google.com/webstore/devconsole" target="_blank" rel="noopener">开发者后台</a> 按顺序填写。灰色框里是要粘贴的英文内容，点"复制"即可。所有图片都在本页所在的文件夹 <code>store-assets/cws/</code>。</p>
+
+  <h2><span class="n">1</span>上传安装包</h2>
+  <p class="where">开发者后台 → 「New item / 新建项」→ 选择 zip</p>
+  <div class="field"><div class="head"><span class="label">安装包</span><button class="copy" data-copy="pkg">复制路径</button></div>
+    <div class="val" id="pkg">/home/linzy/projects/apps/continuechat/release/continuechat-v0.2.2.zip</div>
+    <div class="note">上传后浏览器地址栏里会出现扩展 ID（32 个小写字母），请把它发给我：许可代理会只允许这个 ID 访问。</div></div>
+
+  <h2><span class="n">2</span>商店信息（Store listing）</h2>
+  <p class="where">左侧菜单「Store listing / 商品详情」。名称和简短说明会自动从安装包读取，无需填写。</p>
+
+  <div class="field"><div class="head"><span class="label">Description（详细说明）</span><button class="copy" data-copy="desc">复制</button></div>
+    <div class="val" id="desc">ContinueChat adds a small panel to ChatGPT and Claude that keeps your conversations organized — and lets you continue any chat in the other assistant with one click.
+
+CONTINUE A CHAT IN THE OTHER ASSISTANT
+• Click "Continue in Claude" (or "Continue in ChatGPT") on any conversation.
+• Choose how much to bring: the last 4, 8, 12 or 20 turns, or everything. Context is trimmed to fit without ever cutting a code block or table in half.
+• The other site opens in a new tab with the message box already filled in. You review it and press send — ContinueChat never sends anything for you.
+• If the box can't be filled, you get a one-click "Copy context" button instead.
+
+ORGANIZE
+• Folders and pins that work across both sites.
+• Instant local search over titles and the full text of chats you've opened — including Chinese and Japanese words in the middle of sentences.
+• Export any chat to Markdown, JSON or a printable PDF. Back up everything to one file and import it again.
+• English and Simplified Chinese interface.
+
+PRIVATE BY DESIGN
+• Your conversations, folders and search index are stored only in your browser.
+• No account, no sign-up, no analytics, no tracking, no ads.
+• The only request ContinueChat sends to our server is a Pro license check — never chat content.
+
+FREE AND PRO
+• Free: 3 continues per month, up to 5 folders, pins, search, single-chat export and JSON backup.
+• Pro ($4.99/month or $39 once): unlimited continues, unlimited folders, bulk Markdown and PDF export. Upgrade any time from Settings → License. Payments are handled by Creem, our merchant of record.
+
+Website: https://continuechat.coylin.com
+Support: support@coylin.com
+Privacy policy: https://continuechat.coylin.com/privacy
+
+ContinueChat is an independent product and is not affiliated with, endorsed by or sponsored by OpenAI or Anthropic. ChatGPT is a trademark of OpenAI. Claude is a trademark of Anthropic.</div></div>
+
+  <div class="field"><div class="head"><span class="label">Category（类别）</span></div>
+    <div class="note">选 <span class="pick">Productivity → Workflow &amp; Planning</span>（如果没有这一项，选 <span class="pick">Productivity → Tools</span>）</div></div>
+  <div class="field"><div class="head"><span class="label">Language（语言）</span></div>
+    <div class="note">选 <span class="pick">English</span></div></div>
+
+  <div class="field"><div class="head"><span class="label">Store icon（商店图标 128×128）</span></div>
+    <div class="note">上传 <code>release/unpacked/icons/128.png</code></div>
+    <div class="imgs"><figure><img src="../../release/unpacked/icons/128.png" alt="icon" style="width:96px"><figcaption>release/unpacked/icons/128.png</figcaption></figure></div></div>
+
+  <div class="field"><div class="head"><span class="label">Screenshots（截图，按顺序上传 5 张）</span></div>
+    <div class="imgs">
+      <figure><img src="screenshot-1-panel.png" alt=""><figcaption>screenshot-1-panel.png</figcaption></figure>
+      <figure><img src="screenshot-2-continue.png" alt=""><figcaption>screenshot-2-continue.png</figcaption></figure>
+      <figure><img src="screenshot-3-prefilled.png" alt=""><figcaption>screenshot-3-prefilled.png</figcaption></figure>
+      <figure><img src="screenshot-4-search.png" alt=""><figcaption>screenshot-4-search.png</figcaption></figure>
+      <figure><img src="screenshot-5-export.png" alt=""><figcaption>screenshot-5-export.png</figcaption></figure>
+    </div></div>
+
+  <div class="field"><div class="head"><span class="label">Small promo tile（小宣传图 440×280，必填）</span></div>
+    <div class="imgs"><figure><img src="promo-440x280.png" alt=""><figcaption>promo-440x280.png</figcaption></figure></div></div>
+  <div class="field"><div class="head"><span class="label">Marquee promo tile（大横幅 1400×560，选填）</span></div>
+    <div class="imgs"><figure><img src="promo-1400x560.png" alt=""><figcaption>promo-1400x560.png</figcaption></figure></div></div>
+
+  <div class="field"><div class="head"><span class="label">Homepage URL（主页）</span><button class="copy" data-copy="home">复制</button></div>
+    <div class="val" id="home">https://continuechat.coylin.com</div></div>
+  <div class="field"><div class="head"><span class="label">Support URL（支持页面）</span><button class="copy" data-copy="support">复制</button></div>
+    <div class="val" id="support">https://continuechat.coylin.com/#faq</div>
+    <div class="note">"Official URL" 需要先在 Google Search Console 验证域名，可以留空。</div></div>
+  <div class="field"><div class="head"><span class="label">Mature content（成人内容）</span></div>
+    <div class="note">选 <span class="pick">No</span></div></div>
+
+  <h2><span class="n">3</span>隐私（Privacy）</h2>
+  <p class="where">左侧菜单「Privacy / 隐私权」</p>
+
+  <div class="field"><div class="head"><span class="label">Single purpose description（单一用途）</span><button class="copy" data-copy="purpose">复制</button></div>
+    <div class="val" id="purpose">ContinueChat helps people manage their own AI conversations on chatgpt.com and claude.ai: it organizes those chats (folders, pins, search, export) and lets the user continue a chat from one of these sites on the other by pre-filling the message box. It never sends messages on the user's behalf.</div></div>
+
+  <div class="field"><div class="head"><span class="label">storage 的用途</span><button class="copy" data-copy="p-storage">复制</button></div>
+    <div class="val" id="p-storage">Stores the user's settings, folders, pins, monthly usage counter and license status locally in chrome.storage. Nothing in it is sent to us.</div></div>
+  <div class="field"><div class="head"><span class="label">unlimitedStorage 的用途</span><button class="copy" data-copy="p-unlimited">复制</button></div>
+    <div class="val" id="p-unlimited">Conversations and the search index are kept locally in IndexedDB so users can search, organize and export them offline. People with hundreds of long chats exceed the default quota. The data never leaves the browser.</div></div>
+  <div class="field"><div class="head"><span class="label">alarms 的用途</span><button class="copy" data-copy="p-alarms">复制</button></div>
+    <div class="val" id="p-alarms">Re-checks a purchased Pro license about every 3 days, so a cancelled or refunded license stops unlocking Pro features. No other background work is scheduled.</div></div>
+  <div class="field"><div class="head"><span class="label">Host permission（主机权限）的用途</span><button class="copy" data-copy="p-host">复制</button></div>
+    <div class="val" id="p-host">chatgpt.com and claude.ai: content scripts read the user's own conversation list and the chats they open, using the session the user is already signed in with, so the extension can organize, search and export them; when the user chooses to continue a chat, they fill the message box on the other site (never sending it). The extension runs on no other sites.
+continuechat-license-proxy.costacruz896.workers.dev: our license server. Only when the user enters a Pro license key, the extension sends that key and an activation ID to activate and periodically validate it. No conversation content is sent.</div></div>
+
+  <div class="field"><div class="head"><span class="label">Remote code（远程代码）</span></div>
+    <div class="note">选 <span class="pick">No, I am not using remote code</span>（所有代码都打包在安装包里）</div></div>
+
+  <div class="field"><div class="head"><span class="label">Data usage（数据使用）勾选这三项</span></div>
+    <div class="note"><span class="pick">Authentication information</span>：用网站已有的登录会话读取对话列表（只在内存中使用），以及用户输入的 Pro 许可证密钥。<br>
+    <span class="pick">Personal communications</span>：用户和 AI 的对话内容（只保存在浏览器本地）。<br>
+    <span class="pick">Website content</span>：读取对话标题和网页上的文字，只保存在用户浏览器本地。<br>
+    其余类别都不勾。下面三条声明（不出售数据、不用于无关用途、不用于信用评估）全部勾选。</div></div>
+
+  <div class="field"><div class="head"><span class="label">Privacy policy URL（隐私政策链接）</span><button class="copy" data-copy="privacy">复制</button></div>
+    <div class="val" id="privacy">https://continuechat.coylin.com/privacy</div></div>
+
+  <h2><span class="n">4</span>给审核员的测试说明</h2>
+  <p class="where">左侧菜单「Access → Test instructions」：Username / Password 留空，下面这段粘贴到 Additional instructions（限 500 字符）</p>
+  <div class="field"><div class="head"><span class="label">Test instructions</span><button class="copy" data-copy="test">复制</button></div>
+    <div class="val" id="test">No account with us is needed. Sign in to chatgpt.com or claude.ai with any free account. The ContinueChat panel appears at the top of the left sidebar (floating if the sidebar is collapsed). Open a chat and click "Continue in Claude" or "Continue in ChatGPT": the other site opens in a new tab with the message box filled in; nothing is sent automatically. Folders, pins, search and export need no sign-up. Pro needs a license key and is optional for review.</div></div>
+
+  <h2><span class="n">5</span>发布设置（Distribution）</h2>
+  <div class="field"><div class="note">
+    Visibility（可见性）：<span class="pick">Public</span><br>
+    Regions（地区）：<span class="pick">All regions</span><br>
+    价格：<span class="pick">Free</span>（如果有 "contains in-app purchases / 含应用内购买" 选项就勾上，因为 Pro 是付费的）</div></div>
+
+  <h2><span class="n">6</span>提交审核</h2>
+  <div class="field"><div class="note">右上角点 <span class="pick">Submit for review</span>。可以勾选"审核通过后自动发布"，也可以通过后手动发布。审核一般几天。</div></div>
+  <div class="warn">审核通过后告诉我，我会把网站上的 zip 下载换成"添加到 Chrome"按钮，并让许可代理只接受商店版插件的请求。</div>
+</main>
+<script>
+  document.querySelectorAll('button.copy').forEach((b) => b.addEventListener('click', async () => {
+    const text = document.getElementById(b.dataset.copy).textContent;
+    try { await navigator.clipboard.writeText(text); }
+    catch { const t = document.createElement('textarea'); t.value = text; document.body.append(t); t.select(); document.execCommand('copy'); t.remove(); }
+    const old = b.textContent; b.textContent = '已复制 ✓'; b.classList.add('done');
+    setTimeout(() => { b.textContent = old; b.classList.remove('done'); }, 1500);
+  }));
+</script>
+</body>
+</html>
