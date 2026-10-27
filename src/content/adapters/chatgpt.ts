@@ -46,7 +46,6 @@ export const chatgptAdapter: PlatformAdapter = {
   platform: 'chatgpt',
   newChatUrl: NEW_CHAT_URL.chatgpt,
   conversationUrl: (id) => conversationUrl('chatgpt', id),
-  sidebarAnchors: ['nav[aria-label="Chat history"]', 'nav'],
   currentConversationId: () => location.pathname.match(/\/c\/([\w-]+)/)?.[1] ?? null,
   async listConversations(offset, limit) {
     const d = await api<{ items?: Item[] }>(`/conversations?offset=${offset}&limit=${limit}&order=updated`);

@@ -13,7 +13,6 @@ export interface PlatformAdapter {
   getInputBox(): HTMLElement | null;
   /** Fills the composer only. NEVER clicks send. */
   prefill(text: string): boolean;
-  sidebarAnchors: string[];
   newChatUrl: string;
 }
 
@@ -47,7 +46,12 @@ export async function forEachPage(list: (offset: number, limit: number) => Promi
   return seen.size;
 }
 
-export const firstMatch = (sels: string[]) => { for (const s of sels) { const el = document.querySelector<HTMLElement>(s); if (el) return el; } return null; };
+const shown = (el: HTMLElement) => { const r = el.getBoundingClientRect(); return r.width > 0 && r.height > 0; };
+/** First RENDERED match, by selector priority: ChatGPT keeps a hidden (0×0) copy of its composer in the page (Oct 27). */
+export const firstMatch = (sels: string[]) => {
+  for (const s of sels) for (const el of document.querySelectorAll<HTMLElement>(s)) if (shown(el)) return el;
+  return null;
+};
 /** Verified on both sites (Oct 13): focus + execCommand('insertText') updates ProseMirror and enables send. */
 export function setInputText(el: HTMLElement, text: string) {
   if (el instanceof HTMLTextAreaElement) {

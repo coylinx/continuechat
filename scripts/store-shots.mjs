@@ -62,14 +62,15 @@ await ev(`
 `);
 await nav(`${BASE}/chatgpt/c/g0000-show`, 2500);
 await ev(`
-  await wait(() => P()?.querySelector('[data-cont]'));
-  const f = [...P().querySelectorAll('[data-ftoggle]')].find((b) => b.textContent.includes('Travel')); f?.click();
+  (await wait(() => P()?.querySelector('[data-launch]'))).click(); // open the drawer
+  (await wait(() => P().querySelector('[data-onbok]'))).click();    // dismiss the first-run guide
+  const f = await wait(() => [...P().querySelectorAll('[data-ftoggle]')].find((b) => b.textContent.includes('Travel'))); f.click();
   await new Promise((r) => setTimeout(r, 600));
 `);
 await shot(join(OUT, 'raw/1-panel.png'));
 
-// 2 — the Continue dialog.
-await ev(`P().querySelector('[data-cont]').click(); await wait(() => L()?.querySelector('[data-go]')); await new Promise((r) => setTimeout(r, 500));`);
+// 2 — the Continue dialog, opened from the button above the message box.
+await ev(`P().querySelector('[data-close]').click(); await new Promise((r) => setTimeout(r, 400)); P().querySelector('.cbtn').click(); await wait(() => L()?.querySelector('[data-go]')); await new Promise((r) => setTimeout(r, 500));`);
 await shot(join(OUT, 'raw/2-continue.png'));
 
 // 3 — the Claude tab it opens, message box filled, nothing sent.
@@ -84,7 +85,8 @@ await shot(join(OUT, 'raw/3-prefilled.png'));
 // 4 — search across both sites.
 await nav(`${BASE}/chatgpt/c/g0000-show`, 2500);
 await ev(`
-  const s = await wait(() => P()?.querySelector('.search')); typeInto(s, 'kyoto');
+  (await wait(() => P()?.querySelector('[data-launch]'))).click();
+  const s = await wait(() => P().querySelector('.search')); typeInto(s, 'kyoto');
   await wait(() => P().querySelectorAll('.res').length >= 2); await new Promise((r) => setTimeout(r, 500));
 `);
 await shot(join(OUT, 'raw/4-search.png'));
@@ -101,11 +103,11 @@ await shot(join(OUT, 'raw/5-export.png'));
 
 // Frame each capture into a 1280×800 store screenshot with a caption.
 const CAPTIONS = [
-  ['1-panel', 'Your ChatGPT and Claude chats, organized', 'Folders, pins and both sites in one panel — right in the sidebar.', 'chatgpt.com'],
-  ['2-continue', 'Continue any chat in the other assistant', 'Pick how much context to bring. Code blocks and tables are never cut in half.', 'chatgpt.com'],
+  ['1-panel', 'Your ChatGPT and Claude chats, organized', 'One button in the corner opens folders, pins and search for both sites.', 'chatgpt.com'],
+  ['2-continue', 'Continue any chat in the other assistant', 'Click “Continue in Claude” above the message box. Code blocks and tables are never cut in half.', 'chatgpt.com'],
   ['3-prefilled', 'Lands ready to send — never sent for you', 'The other site opens with the message box filled. You read it and press send.', 'claude.ai'],
   ['4-search', 'Find any conversation in a second', 'Local search across titles and the chats you open, on both sites.', 'chatgpt.com'],
-  ['5-export', 'Export to Markdown, JSON or PDF', 'Back up one chat or many. Everything stays in your browser.', 'chatgpt.com'],
+  ['5-export', 'Export to Markdown, JSON or PDF', 'Markdown and JSON are free, for one chat or all of them. PDF comes with Pro.', 'chatgpt.com'],
 ];
 await send('Emulation.setDeviceMetricsOverride', { width: 1280, height: 800, deviceScaleFactor: 1, mobile: false });
 for (const [name, title, sub, host] of CAPTIONS) {

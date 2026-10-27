@@ -6,7 +6,7 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 const root = resolve(__dirname, '..');
 export default defineConfig({
-  root, appType: 'mpa', publicDir: false,
+  root, appType: 'mpa', publicDir: false, define: { __CC_DEV__: 'false' },
   server: { port: 5179, strictPort: true },
   plugins: [{
     name: 'cc-dev-routes',

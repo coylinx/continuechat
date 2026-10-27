@@ -41,7 +41,6 @@ export const claudeAdapter: PlatformAdapter = {
   platform: 'claude',
   newChatUrl: NEW_CHAT_URL.claude,
   conversationUrl: (id) => conversationUrl('claude', id),
-  sidebarAnchors: ['[data-testid="sidebar-recents"]', 'aside[aria-label="Sidebar"]', '[data-testid="sidebar"]', 'nav'],
   currentConversationId: () => location.pathname.match(/\/chat\/([\w-]+)/)?.[1] ?? null,
   async listConversations(offset, limit) {
     // offset is UNVERIFIED for this endpoint; forEachPage stops if a page brings nothing new.

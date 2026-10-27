@@ -1,5 +1,6 @@
 node_modules
 dist
+dist-dev
 license-proxy/node_modules
 license-proxy/.wrangler
 .dev.vars

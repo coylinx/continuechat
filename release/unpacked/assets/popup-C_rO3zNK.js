@@ -1,0 +1,13 @@
+import{i as u,g as v,t,d as c}from"./i18n-CPj_BCI4.js";import{b as g,r as l,f as h,h as d}from"./rpc-BqmUEB6o.js";import{M as $,e}from"./styles-CAjslIBz.js";import{P as y,a as x,N as L}from"./types-1P_wdy7J.js";const o=document.getElementById("app"),b=()=>{const a=new Date;return c(new Date(a.getFullYear(),a.getMonth()+1,1))},n=a=>{chrome.tabs.create({url:a}),window.close()};async function m(){const[a,s,r]=await Promise.all([l("license:get"),l("usage:get"),l("db:stats")]),p=Math.max(0,s.limit-s.used);o.innerHTML=`<div class="row"><div class="logo">${$}</div><span class="brand sp">ContinueChat</span><span class="pill ${s.premium?"pro":""}">${s.premium?"Pro":e(t("planFree"))}</span></div>
+    <div class="box" style="margin-top:14px">
+      ${s.premium?`<div>${e(t("proActive"))}</div>${a.status==="grace"?`<div class="xs mut">${e(t("licGrace",{date:c(new Date(a.validatedAt??Date.now()))}))}</div>`:""}`:`<div>${e(t("quotaFree",{left:p,limit:s.limit}))}</div>
+           <div class="xs mut" style="margin-top:4px">${e(t("quotaWhatBody",{limit:s.limit,date:b()}))}</div>`}
+    </div>
+    <div style="margin-top:16px;font-weight:580">${e(t("onboardTitle"))}</div>
+    <ol class="steps sm"><li>${e(t("onboard1"))}</li><li>${e(t("onboard2"))}</li><li>${e(t("onboard3"))}</li></ol>
+    <div class="xs mut" style="margin-top:8px">${e(t("howTo"))}</div>
+    <div class="row" style="margin-top:12px">${y.map(i=>`<button class="sp" data-open="${i}">${e(t("openSite",{site:x[i]}))}</button>`).join("")}</div>
+    <div class="xs mut" style="margin-top:10px">${e(t("statsLine",{chats:r.conversations,folders:r.folders}))}</div>
+    <hr>${s.premium?"":`<button class="pri" style="width:100%" data-up>${e(t("upgrade"))}</button>`}
+    <div class="row xs" style="margin-top:8px">${s.premium?"":`<button class="link mut" data-key>${e(t("haveKeyLink"))}</button>`}<span class="sp"></span><button class="link mut" data-settings>${e(t("settings"))}</button></div>
+    <div class="xs mut" style="margin-top:10px">${e(t("storedLocally"))}</div>`,o.querySelectorAll("[data-open]").forEach(i=>i.onclick=()=>n(L[i.dataset.open])),o.querySelector("[data-settings]").onclick=()=>n(chrome.runtime.getURL("options/index.html")),o.querySelector("[data-key]")?.addEventListener("click",()=>n(chrome.runtime.getURL("options/index.html#license"))),o.querySelector("[data-up]")?.addEventListener("click",()=>{h(d)?n(d):n(chrome.runtime.getURL("options/index.html#license"))})}chrome.storage.onChanged.addListener((a,s)=>{s==="local"&&(a[g]||a.license)&&m()});u().then(()=>(document.documentElement.lang=v()==="zh"?"zh-CN":"en",m()));

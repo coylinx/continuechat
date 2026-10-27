@@ -3,6 +3,7 @@ import { fmtDateTime, fmtNum, getLang, initLang, setLang, t, type MsgKey } from 
 import { escHTML as esc } from '../shared/markdown';
 import { REV_KEY, rpc } from '../shared/rpc';
 import { getSettings, setSettings, type LangSetting, type Settings } from '../shared/settings';
+import { MARK } from '../content/ui/styles';
 import type { LicenseState } from '../shared/types';
 
 const app = document.getElementById('app')!;
@@ -22,7 +23,7 @@ async function render() {
   const [st, lic, stats] = await Promise.all([getSettings(), rpc('license:get'), rpc('db:stats')]);
   const welcome = location.hash === '#welcome';
   const version = chrome.runtime.getManifest().version;
-  app.innerHTML = `<div class="row"><div class="logo" aria-hidden="true">↪</div><h1 class="sp">${esc(t('settingsTitle'))}</h1><span class="pill ${lic.premium ? 'pro' : ''}">${lic.premium ? 'Pro' : esc(t('planFree'))}</span></div>
+  app.innerHTML = `<div class="row"><div class="logo" aria-hidden="true">${MARK}</div><h1 class="sp">${esc(t('settingsTitle'))}</h1><span class="pill ${lic.premium ? 'pro' : ''}">${lic.premium ? 'Pro' : esc(t('planFree'))}</span></div>
     ${welcome ? `<section class="banner" style="margin-top:14px"><b>${esc(t('welcomeTitle'))}</b><div style="margin-top:4px">${esc(t('welcomeBody'))}</div></section>` : ''}
 
     <section class="card"><h2>${esc(t('secContinue'))}</h2>
@@ -36,7 +37,7 @@ async function render() {
     </section>
 
     <section class="card"><h2>${esc(t('secLanguage'))}</h2>
-      ${seg('lang', ['auto', 'en', 'zh'], st.lang, (o) => (o === 'auto' ? t('langAuto') : o === 'en' ? 'English' : '简体中文'))}
+      ${seg('lang', ['en', 'zh', 'auto'], st.lang, (o) => (o === 'auto' ? t('langAuto') : o === 'en' ? 'English' : '简体中文'))}
     </section>
 
     <section class="card" id="license"><h2>${esc(t('secPro'))}</h2>
@@ -107,7 +108,7 @@ function wire() {
   };
   app.querySelector<HTMLElement>('#wipe')!.onclick = async () => {
     if (!confirm(t('wipeConfirm'))) return;
-    await rpc('db:wipeAll'); setLang('auto'); await render(); say('#dataMsg', t('wiped'), 'ok');
+    await rpc('db:wipeAll'); setLang('en'); await render(); say('#dataMsg', t('wiped'), 'ok');
   };
 }
 

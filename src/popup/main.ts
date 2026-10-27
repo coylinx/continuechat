@@ -3,25 +3,30 @@ import { fmtDate, getLang, initLang, t } from '../shared/i18n';
 import { escHTML as esc } from '../shared/markdown';
 import { REV_KEY, rpc } from '../shared/rpc';
 import { NEW_CHAT_URL, PLATFORM_LABEL, PLATFORMS } from '../shared/types';
+import { MARK } from '../content/ui/styles';
 
 const app = document.getElementById('app')!;
 const nextMonth1 = () => { const d = new Date(); return fmtDate(new Date(d.getFullYear(), d.getMonth() + 1, 1)); };
 const open = (url: string) => { void chrome.tabs.create({ url }); window.close(); };
 
+/** Toolbar popup: how to use it, what the free quota means, and where to go next. */
 async function render() {
   const [lic, u, st] = await Promise.all([rpc('license:get'), rpc('usage:get'), rpc('db:stats')]);
   const left = Math.max(0, u.limit - u.used);
-  app.innerHTML = `<div class="row"><div class="logo" aria-hidden="true">↪</div><span class="brand sp">ContinueChat</span><span class="pill ${u.premium ? 'pro' : ''}">${u.premium ? 'Pro' : esc(t('planFree'))}</span></div>
-    <div style="margin-top:14px" class="mut sm">${esc(t('continuesThisMonth'))}</div>
-    ${u.premium ? `<div style="margin-top:2px;font-weight:600">${esc(t('unlimited'))}</div>${lic.status === 'grace' ? `<div class="xs mut">${esc(t('licGrace', { date: fmtDate(new Date(lic.validatedAt ?? Date.now())) }))}</div>` : ''}`
-      : `<div class="row" style="margin-top:2px"><span class="dots" aria-hidden="true">${'●'.repeat(left)}${'○'.repeat(Math.min(u.limit, u.used))}</span><b>${esc(t('quotaInfo', { left, limit: u.limit }))}</b></div>
-         <div class="xs mut">${esc(t('resetsOn', { date: nextMonth1() }))}</div>`}
-    <div class="sm mut" style="margin-top:10px">${esc(t('statsLine', { chats: st.conversations, folders: st.folders }))}</div>
-    <hr><div class="sm">${esc(t('howTo'))}</div>
-    <div class="row" style="margin-top:8px">${PLATFORMS.map((p) => `<button class="sp" data-open="${p}">${esc(t('openSite', { site: PLATFORM_LABEL[p] }))}</button>`).join('')}</div>
+  app.innerHTML = `<div class="row"><div class="logo">${MARK}</div><span class="brand sp">ContinueChat</span><span class="pill ${u.premium ? 'pro' : ''}">${u.premium ? 'Pro' : esc(t('planFree'))}</span></div>
+    <div class="box" style="margin-top:14px">
+      ${u.premium ? `<div>${esc(t('proActive'))}</div>${lic.status === 'grace' ? `<div class="xs mut">${esc(t('licGrace', { date: fmtDate(new Date(lic.validatedAt ?? Date.now())) }))}</div>` : ''}`
+        : `<div>${esc(t('quotaFree', { left, limit: u.limit }))}</div>
+           <div class="xs mut" style="margin-top:4px">${esc(t('quotaWhatBody', { limit: u.limit, date: nextMonth1() }))}</div>`}
+    </div>
+    <div style="margin-top:16px;font-weight:580">${esc(t('onboardTitle'))}</div>
+    <ol class="steps sm"><li>${esc(t('onboard1'))}</li><li>${esc(t('onboard2'))}</li><li>${esc(t('onboard3'))}</li></ol>
+    <div class="xs mut" style="margin-top:8px">${esc(t('howTo'))}</div>
+    <div class="row" style="margin-top:12px">${PLATFORMS.map((p) => `<button class="sp" data-open="${p}">${esc(t('openSite', { site: PLATFORM_LABEL[p] }))}</button>`).join('')}</div>
+    <div class="xs mut" style="margin-top:10px">${esc(t('statsLine', { chats: st.conversations, folders: st.folders }))}</div>
     <hr>${u.premium ? '' : `<button class="pri" style="width:100%" data-up>${esc(t('upgrade'))}</button>`}
     <div class="row xs" style="margin-top:8px">${u.premium ? '' : `<button class="link mut" data-key>${esc(t('haveKeyLink'))}</button>`}<span class="sp"></span><button class="link mut" data-settings>${esc(t('settings'))}</button></div>
-    <div class="xs mut" style="margin-top:10px">🔒 ${esc(t('storedLocally'))}</div>`;
+    <div class="xs mut" style="margin-top:10px">${esc(t('storedLocally'))}</div>`;
   app.querySelectorAll<HTMLElement>('[data-open]').forEach((b) => b.onclick = () => open(NEW_CHAT_URL[b.dataset.open as keyof typeof NEW_CHAT_URL]));
   app.querySelector<HTMLElement>('[data-settings]')!.onclick = () => open(chrome.runtime.getURL('options/index.html'));
   app.querySelector<HTMLElement>('[data-key]')?.addEventListener('click', () => open(chrome.runtime.getURL('options/index.html#license')));

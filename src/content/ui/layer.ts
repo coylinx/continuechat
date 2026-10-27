@@ -2,6 +2,7 @@
 // sidebar can't trap position:fixed, and so it works before the panel is mounted (prefill toasts).
 import { escHTML as esc } from '../../shared/markdown';
 import { t } from '../../shared/i18n';
+import { icon as svg } from './icons';
 import { CSS } from './styles';
 import { themed } from './theme';
 
@@ -46,7 +47,7 @@ export function confirmDialog(o: { title: string; body?: string; ok: string; dan
   return new Promise((resolve) => {
     let done = false; const finish = (v: boolean) => { if (!done) { done = true; resolve(v); } };
     const dlg = modal(`<h2>${esc(o.title)}</h2>${o.body ? `<p class="mut">${esc(o.body)}</p>` : ''}
-      <div class="row" style="margin-top:14px;justify-content:flex-end"><button data-x>${esc(t('cancel'))}</button><button class="pri ${o.danger ? 'danger' : ''}" data-ok autofocus>${esc(o.ok)}</button></div>`, () => finish(false));
+      <div class="row" style="margin-top:16px;justify-content:flex-end"><button data-x>${esc(t('cancel'))}</button><button class="pri ${o.danger ? 'danger' : ''}" data-ok autofocus>${esc(o.ok)}</button></div>`, () => finish(false));
     dlg.querySelector<HTMLElement>('[data-x]')!.onclick = () => close();
     dlg.querySelector<HTMLElement>('[data-ok]')!.onclick = () => { finish(true); close(); };
   });
@@ -55,7 +56,7 @@ export function promptDialog(o: { title: string; value?: string; placeholder?: s
   return new Promise((resolve) => {
     let done = false; const finish = (v: string | null) => { if (!done) { done = true; resolve(v); } };
     const dlg = modal(`<h2>${esc(o.title)}</h2><input class="txt" maxlength="100" value="${esc(o.value ?? '')}" placeholder="${esc(o.placeholder ?? '')}" autofocus>
-      <div class="row" style="margin-top:6px;justify-content:flex-end"><button data-x>${esc(t('cancel'))}</button><button class="pri" data-ok>${esc(o.ok)}</button></div>`, () => finish(null));
+      <div class="row" style="margin-top:12px;justify-content:flex-end"><button data-x>${esc(t('cancel'))}</button><button class="pri" data-ok>${esc(o.ok)}</button></div>`, () => finish(null));
     const input = dlg.querySelector<HTMLInputElement>('input')!; const ok = dlg.querySelector<HTMLButtonElement>('[data-ok]')!;
     const sync = () => { ok.disabled = !input.value.trim(); }; sync(); input.oninput = sync;
     const submit = () => { const v = input.value.trim(); if (!v) return; finish(v); close(); };
@@ -70,8 +71,8 @@ export interface ToastAction { label: string; primary?: boolean; onClick?: () =>
 export function toast(text: string, kind: 'info' | 'ok' | 'err' = 'info', o: { timeout?: number; actions?: ToastAction[] } = {}) {
   ensure();
   const el = document.createElement('div'); el.className = `toast ${kind}`; el.setAttribute('role', kind === 'err' ? 'alert' : 'status');
-  const icon = kind === 'ok' ? '✓' : kind === 'err' ? '⚠' : 'ⓘ';
-  el.innerHTML = `<span class="ti">${icon}</span><span class="sp">${esc(text)}</span>${(o.actions ?? []).map((a, i) => `<button data-a="${i}" class="${a.primary ? 'pri' : ''}">${esc(a.label)}</button>`).join('')}<button class="ghost icon" data-close aria-label="${esc(t('close'))}">✕</button>`;
+  const icon = svg(kind === 'ok' ? 'check' : kind === 'err' ? 'alert' : 'info');
+  el.innerHTML = `<span class="ti">${icon}</span><span class="sp">${esc(text)}</span>${(o.actions ?? []).map((a, i) => `<button data-a="${i}" class="${a.primary ? 'pri' : ''}">${esc(a.label)}</button>`).join('')}<button class="ghost icon" data-close aria-label="${esc(t('close'))}">${svg('x')}</button>`;
   const remove = () => el.remove();
   el.querySelectorAll<HTMLElement>('[data-a]').forEach((b) => b.onclick = async () => { remove(); await o.actions![Number(b.dataset.a)].onClick?.(); });
   el.querySelector<HTMLElement>('[data-close]')!.onclick = remove;

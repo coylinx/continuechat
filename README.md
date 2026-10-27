@@ -11,7 +11,8 @@ src/shared/              config, settings, i18n (en/zh), types, db (IndexedDB + 
                          license, paywall, continue (last-N + block-safe trimming), export (MD/JSON/printable HTML), markdown (escape-first renderer), zip, rpc
 src/background/          handlers.ts (all RPCs, incl. continue:open = consume + open tab + per-tab prefill), index.ts (listeners, revalidation alarm)
 src/content/adapters/    PlatformAdapter + chatgpt / claude (pure parse functions are unit-tested), pagination helper, typed SiteError
-src/content/ui/          mount (Shadow DOM, sidebar or floating), panel, continue dialog, export wizard, paywall, layer (body-level modals/toasts), theme
+src/content/ui/          mount (one fixed Shadow DOM host on <body>, never inside the site layout), panel (launcher + right drawer + "Continue in …"
+                         button on the composer), continue dialog, export wizard, paywall, layer (body-level modals/toasts), theme
 src/content/prefill.ts   target tab: fill composer, verify, toast; "Copy context" fallback if the composer can't be filled
 src/popup, src/options   popup (quota, quick links), settings (continue defaults, search, language, license, backup/import/wipe, about)
 src/print                printable export page (extension page, so the site's CSP can't interfere) → browser "Save as PDF"
@@ -39,11 +40,15 @@ Version comes from package.json. Change the proxy domain in `src/shared/config.t
 `npm run dev` → http://localhost:5179/chatgpt/ or http://localhost:5179/claude/new — a fake site with a sidebar and a ProseMirror-like composer.
 The real content script, background handlers (IndexedDB), popup (`/dev/popup.html`), options (`/dev/options.html`) and print page run against
 fixture chats (230 ChatGPT / 40 Claude, mixed EN/中文, long code/table answers, attachments). "Continue" opens the other fake site and prefills it.
-Toolbar: collapse sidebar (→ floating panel), dark theme, reset data. URL flags: `?fail=auth|rate|net` (sync errors), `?nobox` (no composer → copy fallback).
+Toolbar: collapse sidebar, dark theme, reset data. URL flags: `?fail=auth|rate|net` (sync errors), `?nobox` (no composer → copy fallback).
 chatgpt.com / claude.ai are never contacted; external tabs are blocked by the mock.
 
+## Testing on the live sites
+`npm run build:dev` → `dist-dev/` ("ContinueChat DEV", load unpacked, turn the store version off). Dev builds only: running
+`window.postMessage({ continuechatDev: "reload" }, "*")` in the page reloads the extension (then reload the tab). Release builds strip this hook.
+
 ## Rules
-Free: 5 folders, pin, local search, 3 continue-chat/month (month key resets on the 1st). Premium ($4.99/mo / $39 lifetime, Creem license): unlimited folders & continue, bulk Markdown/PDF export. Paywall at 4th continue, 6th folder, multi-chat Markdown/PDF (multi-chat JSON stays free). Offline grace 7 days; expiry only locks premium, never deletes data. A continue is counted only when the target tab actually opened (refunded otherwise).
+Free: 5 folders, pin, local search, 3 continue-chat/month (month key resets on the 1st). Premium ($4.99/mo / $39 lifetime, Creem license): unlimited folders & continue, PDF export. Paywall at 4th continue, 6th folder, any PDF export (Markdown/JSON, one chat or all, stay free). Offline grace 7 days; expiry only locks premium, never deletes data. A continue is counted only when the target tab actually opened (refunded otherwise).
 
 ## Behaviour notes
 - Sync: first visit per site walks all list pages (≤30×100, 400 ms apart); later page loads read the newest page; "Sync" re-walks all. Pagination stops on a short page or when a page brings nothing new (guards an endpoint that ignores `offset`).
@@ -57,15 +62,18 @@ Free: 5 folders, pin, local search, 3 continue-chat/month (month key resets on t
 ## Verified (real sites, Oct 13)
 - ChatGPT: /api/auth/session token, /backend-api/conversations, /backend-api/conversation/{id}; sidebar nav[aria-label="Chat history"]; composer div.ProseMirror[role=textbox] + execCommand insertText.
 - Claude: /api/organizations (chat-capable org), chat_conversations list + detail (tree=True&rendering_mode=messages, attachments.extracted_content); sidebar aside[aria-label="Sidebar"] / data-testid sidebar*; composer div[data-testid="chat-input"].ProseMirror.
-- Since then everything was verified only in the dev harness + unit tests (Oct 14), not on the live sites.
+## Verified (real sites, Oct 27, v0.3)
+- ChatGPT dropped `nav[aria-label="Chat history"]` and localized its aria-labels, which broke the in-sidebar panel → the UI no longer goes inside either site's layout.
+- ChatGPT keeps a hidden 0×0 copy of its ProseMirror composer: `firstMatch` returns the first RENDERED match (else prefill typed into the hidden one).
+- Launcher, drawer, sync (356 chats), pin, export wizard + PDF paywall, the composer button on both sites, continue ChatGPT→Claude and Claude→ChatGPT with the text landing in the new tab.
 
 ## Still unverified / TODO
-- On the live sites: panel placement inside the current sidebars, prefill in a freshly opened tab, the print page.
+- On the live sites: the print page (PDF, Pro).
 - ChatGPT pagination past 100 (offset param used before) and Claude list `offset` (unverified; the stop-guard makes it safe). Claude `current_leaf_message_uuid` and the `lastActiveOrg` cookie (used only when present).
 - Summary mode (stub). Chats deleted on the site stay in the local index.
 - Creem: no real purchase yet. Activation with a real key, and whether a Monthly key stops validating after the subscription is cancelled/expires (keys are set to never expire; if Creem doesn't disable them, add a `subscription.expired` webhook that deactivates the key).
 - Creem account review: requested changes addressed by continuechat.coylin.com (pricing, /privacy, /terms); re-review requested Oct 18 (24–48 h).
-- Chrome Web Store: item `icdcdncollaclgcjnolpolgddbjijndj` (v0.2.2). The site's install buttons link to the store listing (no more zip download), and the license proxy only accepts this extension ID (`ALLOWED_EXTENSION_IDS`). Unpacked/dev builds have other IDs and get 403 from the proxy — append their ID (comma-separated) and redeploy while testing Pro.
+- Chrome Web Store: item `icdcdncollaclgcjnolpolgddbjijndj` (v0.2.2 live; v0.3.0 floating UI ready for upload). The site's install buttons link to the store listing (no more zip download), and the license proxy only accepts this extension ID (`ALLOWED_EXTENSION_IDS`). Unpacked/dev builds have other IDs and get 403 from the proxy — append their ID (comma-separated) and redeploy while testing Pro.
 - Storage lives in the background service worker (typed RPC, `src/shared/rpc.ts`); continue counter shared: 3/month total.
 
 ## License proxy deployment

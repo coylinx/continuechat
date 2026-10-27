@@ -16,6 +16,7 @@ chrome.alarms.onAlarm.addListener((a) => { if (a.name === ALARM) void revalidate
 
 chrome.runtime.onMessage.addListener((msg: RpcRequest, sender, reply) => {
   if (sender.id !== chrome.runtime.id) return false;
+  if (__CC_DEV__ && (msg as { type?: string })?.type === 'dev:reload') { chrome.runtime.reload(); return false; } // dev builds only
   const h = handlers[msg?.type] as ((m: RpcRequest, s: chrome.runtime.MessageSender) => Promise<unknown>) | undefined;
   if (!h) { reply({ ok: false, error: `unknown rpc ${String(msg?.type)}` }); return false; }
   h(msg, sender).then((data) => reply({ ok: true, data }), (e: Error) => reply({ ok: false, error: e.message }));

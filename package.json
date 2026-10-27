@@ -1,10 +1,11 @@
 {
   "name": "continuechat",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "private": true,
   "type": "module",
   "scripts": {
     "build": "node scripts/build.mjs",
+    "build:dev": "node scripts/build.mjs --dev",
     "typecheck": "tsc --noEmit",
     "test": "node scripts/test.mjs",
     "pack": "node scripts/build.mjs && node scripts/pack.mjs",

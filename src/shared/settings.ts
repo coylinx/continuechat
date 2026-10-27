@@ -7,7 +7,7 @@ export interface Settings {
   indexOnOpen: boolean;
   lang: LangSetting;
 }
-export const DEFAULT_SETTINGS: Settings = { continueTurns: DEFAULT_CONTINUE_TURNS, continueBudget: DEFAULT_CONTINUE_CHAR_BUDGET, indexOnOpen: true, lang: 'auto' };
+export const DEFAULT_SETTINGS: Settings = { continueTurns: DEFAULT_CONTINUE_TURNS, continueBudget: DEFAULT_CONTINUE_CHAR_BUDGET, indexOnOpen: true, lang: 'en' };
 const KEYS = Object.keys(DEFAULT_SETTINGS) as (keyof Settings)[];
 
 /** Validates whatever is in storage, so a bad value can never break the UI. */

@@ -9,18 +9,28 @@ const s = (n: unknown) => (Number(n) === 1 ? '' : 's');
 
 const en = {
   // panel
-  searchPlaceholder: 'Search all chats', export: 'Export…', sync: 'Sync', syncTitle: 'Refresh the chat list from {site}',
-  storedLocally: 'Stored locally · No sign-up', expand: 'Expand', collapse: 'Collapse',
-  syncing: 'Syncing…', syncingN: 'Syncing… {n} chats', synced: 'Synced · just now', syncFailed: 'Sync failed', retry: 'Retry',
+  searchPlaceholder: 'Search chats', export: 'Export', sync: 'Sync', syncTitle: 'Refresh the chat list from {site}',
+  storedLocally: 'Stored only in this browser · No sign-up',
+  syncing: 'Syncing…', syncingN: 'Syncing… {n} chats', synced: 'Synced', syncFailed: 'Sync failed', retry: 'Retry',
+  syncedN: (v: V) => `${v.n} chat${s(v.n)} synced`,
   continueIn: 'Continue in {site}', continueHint: 'Bring this chat into a new {site} chat. Nothing is sent automatically.',
-  pin: 'Pin', unpin: 'Unpin', addToFolder: 'Folder', openChatHint: 'Open a chat to continue it in {site}, pin it, or file it in a folder.',
+  continueExplain: 'Opens {site} in a new tab with this chat in the message box. Nothing is sent.',
+  thisChat: 'This chat', noChatTitle: 'No chat open',
+  pin: 'Pin', unpin: 'Unpin', addToFolder: 'Add to folder', openChatHint: 'Open a conversation to continue it in {site}, pin it or file it.',
   pinned: 'Pinned', folders: 'Folders', newFolder: 'New folder', renameFolder: 'Rename folder', deleteFolder: 'Delete folder',
   removeFromFolder: 'Remove from folder', folderEmpty: 'Empty', noFolders: 'No folders yet', unavailable: 'Chat not synced yet',
   folderNamePlaceholder: 'Folder name', addToFolderTitle: 'Add to folder',
   deleteFolderTitle: 'Delete “{name}”?', deleteFolderBody: 'The chats inside are kept.',
   results: 'Results', noMatches: 'No matches',
   searchHelp: (v: V) => `Search covers the titles of ${v.n} synced chat${s(v.n)} and the full text of ${v.full} chat${s(v.full)} you have opened.`,
-  quotaLeft: '{left}/{limit} left', quotaInfo: '{left} of {limit} left this month', proActive: 'ContinueChat Pro is active',
+  quotaInfo: 'Uses 1 free continue · {left} left this month', proActive: 'Pro · Unlimited continues',
+  quotaFree: '{left} of {limit} free continues left this month', quotaWhat: 'What counts?',
+  quotaWhatBody: 'A continue is each time ContinueChat opens the other assistant with your chat filled in. Free includes {limit} a month and resets on {date}; it only counts when the new tab actually opens. Pins, folders, search and Markdown/JSON export don’t use it.',
+  help: 'How it works', launcherTip: 'ContinueChat lives here. Drag to move it.',
+  onboardTitle: 'How it works', onboard1: 'Open a chat on ChatGPT or Claude.',
+  onboard2: 'Click “Continue in …” above the message box.',
+  onboard3: 'The other assistant opens with the chat filled in. Review it, then send.',
+  onboardMore: 'Pins, folders, search and export live here too. Everything stays in your browser.',
   // common
   cancel: 'Cancel', close: 'Close', done: 'Done', save: 'Save', create: 'Create', delete: 'Delete', next: 'Next', back: 'Back',
   pro: 'Pro', free: 'Free', all: 'All',
@@ -28,7 +38,7 @@ const en = {
   errHttp: '{site} returned an error. Try again later.', errGeneric: 'Something went wrong. Please try again.',
   // continue dialog
   readingChat: 'Reading this chat…', openChatFirst: 'Open a chat with at least one message first.',
-  continueTitle: 'Continue this chat elsewhere', continueInLabel: 'Continue in', youAreHere: 'You are here', bringLast: 'Bring the last',
+  continueTitle: 'Continue chat', continueInLabel: 'Continue in', youAreHere: 'You are here', bringLast: 'Bring the last',
   nTurns: (v: V) => `${v.n} turn${s(v.n)}`, nFiles: (v: V) => `${v.n} file${s(v.n)}`, allTurns: 'All turns', nChars: '{n} chars',
   tooLong: 'This context is too long ({full} / {budget} characters). Bring fewer turns?', bring4: 'Bring 4 turns', trimToFit: 'Trim to fit',
   trimNote: 'Trim to fit removes the earliest ~{n} characters.', trimmedNote: 'Trimmed: the earliest ~{n} characters will be left out.',
@@ -39,8 +49,9 @@ const en = {
   // paywall
   pwQuotaTitle: 'You used all {limit} continues this month', pwQuotaSub: 'Free continues reset on {date}. ContinueChat Pro keeps this chat going in {site} right now.',
   pwFolderTitle: "You've reached {limit} folders", pwFolderSub: 'ContinueChat Pro gives you unlimited folders. Your existing folders stay as they are.',
-  pwExportTitle: 'Batch export to Markdown/PDF is a Pro feature', pwExportSub: 'Exporting several chats as JSON stays free. ContinueChat Pro exports them to Markdown or PDF in one go.',
-  featContinues: 'Unlimited continues', featFolders: 'Unlimited folders', featExport: 'Batch export to Markdown, PDF',
+  upgradeTitle: 'Upgrade to ContinueChat Pro', upgradeSub: 'Unlimited continues and folders, plus PDF export. Pay monthly or once.',
+  pwExportTitle: 'PDF export is a Pro feature', pwExportSub: 'Markdown and JSON export stay free, for one chat or many. ContinueChat Pro adds print-ready PDF.',
+  featContinues: 'Unlimited continues', featFolders: 'Unlimited folders', featExport: 'Export to PDF',
   monthly: 'Monthly', perMonth: '/mo', lifetime: 'Lifetime · pay once', upgrade: 'Upgrade to Pro', haveKey: 'I have a license key', notNow: 'Not now',
   checkoutSoon: 'Checkout is not open yet. Please check back soon.',
   // export
@@ -60,10 +71,10 @@ const en = {
   // popup
   planFree: 'Free', continuesThisMonth: 'Continues this month', resetsOn: 'Resets {date}', unlimited: 'Unlimited',
   statsLine: (v: V) => `${v.chats} chat${s(v.chats)} synced · ${v.folders} folder${s(v.folders)}`,
-  howTo: 'Open a chat on ChatGPT or Claude. ContinueChat sits at the top of the sidebar.', openSite: 'Open {site}', settings: 'Settings', haveKeyLink: 'Have a license key?',
+  howTo: 'On ChatGPT or Claude, click the ContinueChat button in the bottom-right corner.', openSite: 'Open {site}', settings: 'Settings', haveKeyLink: 'Have a license key?',
   // options
   settingsTitle: 'ContinueChat settings', welcomeTitle: 'ContinueChat is ready',
-  welcomeBody: 'Open a chat on ChatGPT or Claude. ContinueChat appears at the top of the sidebar, or floating at the bottom right when the sidebar is closed.',
+  welcomeBody: 'Open a chat on ChatGPT or Claude, then click “Continue in …” above the message box, or the ContinueChat button in the bottom-right corner for folders, search and export.',
   secContinue: 'Continue', defaultTurns: 'Turns to bring by default', maxContext: 'Maximum context length',
   maxContextHelp: 'Longer context keeps more history but fills more of the new chat’s input box.', nCharsFull: '{n} characters',
   secSearch: 'Search', indexOnOpen: 'Save the text of chats I open, so search can find words inside them', indexOnOpenHelp: 'Saved only in this browser.',
@@ -89,24 +100,34 @@ const en = {
 export type MsgKey = keyof typeof en;
 
 const zh: Record<MsgKey, Msg> = {
-  searchPlaceholder: '搜索所有对话', export: '导出…', sync: '同步', syncTitle: '从 {site} 刷新对话列表',
-  storedLocally: '本地存储 · 无需注册', expand: '展开', collapse: '收起',
+  searchPlaceholder: '搜索对话', export: '导出', sync: '同步', syncTitle: '从 {site} 刷新对话列表',
+  storedLocally: '只保存在本浏览器 · 无需注册',
   syncing: '同步中…', syncingN: '同步中… 已同步 {n} 个对话', synced: '已同步', syncFailed: '同步失败', retry: '重试',
+  syncedN: '已同步 {n} 个对话',
   continueIn: '在 {site} 继续', continueHint: '把这段对话带到新的 {site} 对话里，不会自动发送。',
-  pin: '置顶', unpin: '取消置顶', addToFolder: '文件夹', openChatHint: '打开一个对话，就可以在 {site} 中继续、置顶或归入文件夹。',
+  continueExplain: '在新标签页打开 {site}，对话会填进输入框，不会自动发送。',
+  thisChat: '当前对话', noChatTitle: '还没打开对话',
+  pin: '置顶', unpin: '取消置顶', addToFolder: '加入文件夹', openChatHint: '打开任意对话后，可以在 {site} 继续、置顶或归入文件夹。',
   pinned: '已置顶', folders: '文件夹', newFolder: '新建文件夹', renameFolder: '重命名文件夹', deleteFolder: '删除文件夹',
   removeFromFolder: '移出文件夹', folderEmpty: '空', noFolders: '还没有文件夹', unavailable: '对话尚未同步',
   folderNamePlaceholder: '文件夹名称', addToFolderTitle: '添加到文件夹',
   deleteFolderTitle: '删除“{name}”？', deleteFolderBody: '文件夹里的对话会保留。',
   results: '搜索结果', noMatches: '没有匹配的结果',
   searchHelp: '搜索范围：已同步的 {n} 个对话标题，以及你打开过的 {full} 个对话全文。',
-  quotaLeft: '剩余 {left}/{limit}', quotaInfo: '本月剩余 {left}/{limit} 次', proActive: 'ContinueChat Pro 已激活',
+  quotaInfo: '用掉 1 次免费继续 · 本月还剩 {left} 次', proActive: 'Pro · 不限次数继续',
+  quotaFree: '本月还剩 {left}/{limit} 次免费继续', quotaWhat: '什么算一次？',
+  quotaWhatBody: '「继续」指 ContinueChat 把对话带到另一个 AI、在新标签页填好输入框，每成功打开一次算一次。免费版每月 {limit} 次，{date} 重置。置顶、文件夹、搜索、导出 Markdown/JSON 都不占用这个次数。',
+  help: '使用说明', launcherTip: 'ContinueChat 在这里，可以拖动位置。',
+  onboardTitle: '使用方法', onboard1: '在 ChatGPT 或 Claude 打开一个对话。',
+  onboard2: '点输入框上方的「在 … 继续」。',
+  onboard3: '另一个 AI 会打开并填好对话内容，你检查后再发送。',
+  onboardMore: '置顶、文件夹、搜索和导出也在这里，数据只保存在你的浏览器。',
   cancel: '取消', close: '关闭', done: '完成', save: '保存', create: '创建', delete: '删除', next: '下一步', back: '上一步',
   pro: 'Pro', free: '免费', all: '全部',
   errAuth: '请先登录 {site}', errRate: '{site} 请求过于频繁，请稍后再试。', errNet: '网络错误，请检查网络连接。',
   errHttp: '{site} 返回了错误，请稍后再试。', errGeneric: '出了点问题，请重试。',
   readingChat: '正在读取对话…', openChatFirst: '请先打开一个至少有一条消息的对话。',
-  continueTitle: '在别处继续这段对话', continueInLabel: '继续到', youAreHere: '当前所在', bringLast: '带上最近',
+  continueTitle: '继续对话', continueInLabel: '继续到', youAreHere: '当前所在', bringLast: '带上最近',
   nTurns: '{n} 轮', nFiles: '{n} 个文件', allTurns: '全部轮次', nChars: '{n} 字符',
   tooLong: '上下文太长（{full} / {budget} 字符），要少带几轮吗？', bring4: '只带 4 轮', trimToFit: '裁剪以适应',
   trimNote: '“裁剪以适应”会去掉最早的约 {n} 个字符。', trimmedNote: '已裁剪：最早的约 {n} 个字符不会带上。',
@@ -116,8 +137,9 @@ const zh: Record<MsgKey, Msg> = {
   trimmedToFit: '上下文已裁剪', opening: '正在打开…',
   pwQuotaTitle: '本月 {limit} 次继续已用完', pwQuotaSub: '免费次数将于 {date} 重置。升级 ContinueChat Pro，现在就能在 {site} 继续这段对话。',
   pwFolderTitle: '已达到 {limit} 个文件夹上限', pwFolderSub: 'ContinueChat Pro 不限文件夹数量，现有文件夹保持不变。',
-  pwExportTitle: '批量导出 Markdown/PDF 是 Pro 功能', pwExportSub: '批量导出 JSON 仍然免费。ContinueChat Pro 可一次性导出为 Markdown 或 PDF。',
-  featContinues: '不限次数继续对话', featFolders: '不限文件夹数量', featExport: '批量导出 Markdown、PDF',
+  upgradeTitle: '升级 ContinueChat Pro', upgradeSub: '不限次数继续、不限文件夹，还能导出 PDF。可以按月，也可以一次买断。',
+  pwExportTitle: 'PDF 导出是 Pro 功能', pwExportSub: 'Markdown 和 JSON 导出一直免费，单个或批量都可以。升级 ContinueChat Pro 即可导出排版好的 PDF。',
+  featContinues: '不限次数继续对话', featFolders: '不限文件夹数量', featExport: '导出 PDF',
   monthly: '按月', perMonth: '/月', lifetime: '终身 · 一次付费', upgrade: '升级到 Pro', haveKey: '我有许可证密钥', notNow: '暂不',
   checkoutSoon: '购买通道尚未开放，请稍后再来。',
   stepOf: '第 {i} 步，共 3 步', selectChats: '选择对话', filterPlaceholder: '按标题筛选', selectAll: '全选', nSelected: '已选 {n} 个',
@@ -133,9 +155,9 @@ const zh: Record<MsgKey, Msg> = {
   ctxUser: '用户', ctxAI: 'AI', ctxTrimmed: '…[更早的上下文已省略]', ctxFileTrunc: '…[文件内容已截断]', exportedWith: '由 ContinueChat 导出',
   planFree: '免费版', continuesThisMonth: '本月继续次数', resetsOn: '{date} 重置', unlimited: '不限次数',
   statsLine: '已同步 {chats} 个对话 · {folders} 个文件夹',
-  howTo: '在 ChatGPT 或 Claude 中打开一个对话，ContinueChat 就在侧边栏顶部。', openSite: '打开 {site}', settings: '设置', haveKeyLink: '已有许可证密钥？',
+  howTo: '在 ChatGPT 或 Claude 页面，点右下角的 ContinueChat 按钮。', openSite: '打开 {site}', settings: '设置', haveKeyLink: '已有许可证密钥？',
   settingsTitle: 'ContinueChat 设置', welcomeTitle: 'ContinueChat 已就绪',
-  welcomeBody: '在 ChatGPT 或 Claude 中打开一个对话。ContinueChat 会出现在侧边栏顶部；侧边栏收起时，会悬浮在右下角。',
+  welcomeBody: '在 ChatGPT 或 Claude 打开一个对话，点输入框上方的「在 … 继续」；文件夹、搜索和导出在右下角的 ContinueChat 按钮里。',
   secContinue: '继续对话', defaultTurns: '默认带上的轮数', maxContext: '上下文最大长度',
   maxContextHelp: '上下文越长，保留的历史越多，但也会占用新对话输入框更多空间。', nCharsFull: '{n} 字符',
   secSearch: '搜索', indexOnOpen: '保存我打开过的对话全文，以便搜索对话内容', indexOnOpenHelp: '仅保存在本浏览器中。',
@@ -163,10 +185,10 @@ export const MESSAGES = { en, zh };
 export type Lang = 'en' | 'zh';
 export const detectLang = (setting: LangSetting = 'auto'): Lang =>
   setting === 'en' || setting === 'zh' ? setting : (globalThis.navigator?.language ?? '').toLowerCase().startsWith('zh') ? 'zh' : 'en';
-let lang: Lang = detectLang();
+let lang: Lang = 'en'; // English unless the user picks 中文 (or "Match browser") in Settings
 export const getLang = () => lang;
 export function setLang(setting: LangSetting) { lang = detectLang(setting); }
-export async function initLang() { try { setLang((await getSettings()).lang); } catch { /* storage unavailable: keep browser language */ } }
+export async function initLang() { try { setLang((await getSettings()).lang); } catch { /* storage unavailable: keep English */ } }
 
 export function t(k: MsgKey, v: V = {}): string {
   const m: Msg = (lang === 'zh' ? zh[k] : undefined) ?? en[k];
