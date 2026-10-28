@@ -73,7 +73,7 @@ Free: 5 folders, pin, local search, 3 continue-chat/month (month key resets on t
 - Summary mode (stub). Chats deleted on the site stay in the local index.
 - Creem: no real purchase yet. Activation with a real key, and whether a Monthly key stops validating after the subscription is cancelled/expires (keys are set to never expire; if Creem doesn't disable them, add a `subscription.expired` webhook that deactivates the key).
 - Creem account review: requested changes addressed by continuechat.coylin.com (pricing, /privacy, /terms); re-review requested Oct 18 (24–48 h).
-- Chrome Web Store: item `icdcdncollaclgcjnolpolgddbjijndj` (v0.2.2 live; v0.3.0 floating UI ready for upload). The site's install buttons link to the store listing (no more zip download), and the license proxy only accepts this extension ID (`ALLOWED_EXTENSION_IDS`). Unpacked/dev builds have other IDs and get 403 from the proxy — append their ID (comma-separated) and redeploy while testing Pro.
+- Chrome Web Store: item `hnfljdcdnafgcmlcnpookacdfeboilmc` (v0.3.0, live Oct 28). It replaced the 0.2.2 item `icdcdncollaclgcjnolpolgddbjijndj`, whose listing is gone; the proxy still accepts both IDs. The site's install buttons link to the store listing (no more zip download), and the license proxy only accepts this extension ID (`ALLOWED_EXTENSION_IDS`). Unpacked/dev builds have other IDs and get 403 from the proxy — append their ID (comma-separated) and redeploy while testing Pro.
 - Storage lives in the background service worker (typed RPC, `src/shared/rpc.ts`); continue counter shared: 3/month total.
 
 ## License proxy deployment
