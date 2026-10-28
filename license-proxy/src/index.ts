@@ -16,10 +16,19 @@ function cors(origin: string | null, env: Env): Record<string, string> {
 }
 const json = (b: unknown, status: number, h: Record<string, string>) => new Response(JSON.stringify(b), { status, headers: { 'content-type': 'application/json', ...h } });
 
+type CreemData = { status?: string | number; instance?: { id?: string }; message?: string | string[]; error?: string; trace_id?: string; raw?: string };
 async function creem(env: Env, path: string, body: object) {
   const r = await fetch(`${env.CREEM_API_BASE}${path}`, { method: 'POST', headers: { 'content-type': 'application/json', 'x-api-key': env.CREEM_API_KEY ?? '' }, body: JSON.stringify(body) });
-  return { status: r.status, data: (await r.json().catch(() => ({}))) as { status?: string; instance?: { id?: string }; message?: string } };
+  const text = await r.text();
+  let data: CreemData; try { data = JSON.parse(text) as CreemData; } catch { data = { raw: text.slice(0, 200) }; }
+  return { status: r.status, data };
 }
+/** Creem errors look like {status: 400, error: "Bad Request", message: ["…"], trace_id}; pass the reason through so the UI can show it. */
+const why = (s: number, d: CreemData) => {
+  const m = Array.isArray(d.message) ? d.message.join('; ') : d.message;
+  return `${m || d.error || d.raw || 'error'} (creem ${s}${d.trace_id ? ' · ' + d.trace_id.slice(0, 8) : ''})`;
+};
+const licStatus = (d: CreemData) => (typeof d.status === 'string' ? d.status : undefined);
 
 export default {
   async fetch(req: Request, env: Env): Promise<Response> {
@@ -36,18 +45,18 @@ export default {
     try {
       if (path === '/activate') {
         const { status, data } = await creem(env, '/v1/licenses/activate', { key: b.key, instance_name: (b.instanceName ?? 'continuechat').slice(0, 64) });
-        return json({ valid: status < 300 && data.status === 'active', instanceId: data.instance?.id, status: data.status, error: status >= 300 ? data.message ?? `creem ${status}` : undefined }, 200, h);
+        return json({ valid: status < 300 && data.status === 'active', instanceId: data.instance?.id, status: licStatus(data), error: status >= 300 ? why(status, data) : undefined }, 200, h);
       }
       if (path === '/validate') {
         if (!b.instanceId) return json({ error: 'instanceId required' }, 400, h);
         const { status, data } = await creem(env, '/v1/licenses/validate', { key: b.key, instance_id: b.instanceId });
         if (status >= 500) return json({ error: 'upstream' }, 502, h); // client treats as offline -> grace
-        return json({ valid: status < 300 && data.status === 'active', status: data.status }, 200, h);
+        return json({ valid: status < 300 && data.status === 'active', status: licStatus(data) }, 200, h);
       }
       if (path === '/deactivate') {
         if (!b.instanceId) return json({ error: 'instanceId required' }, 400, h);
         const { status, data } = await creem(env, '/v1/licenses/deactivate', { key: b.key, instance_id: b.instanceId });
-        return json({ ok: status < 300, status: data.status, error: status >= 300 ? data.message ?? `creem ${status}` : undefined }, status >= 500 ? 502 : 200, h);
+        return json({ ok: status < 300, status: licStatus(data), error: status >= 300 ? why(status, data) : undefined }, status >= 500 ? 502 : 200, h);
       }
       return json({ error: 'not found' }, 404, h);
     } catch { return json({ error: 'upstream' }, 502, h); }
