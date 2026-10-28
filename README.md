@@ -71,7 +71,7 @@ Free: 5 folders, pin, local search, 3 continue-chat/month (month key resets on t
 - On the live sites: the print page (PDF, Pro).
 - ChatGPT pagination past 100 (offset param used before) and Claude list `offset` (unverified; the stop-guard makes it safe). Claude `current_leaf_message_uuid` and the `lastActiveOrg` cookie (used only when present).
 - Summary mode (stub). Chats deleted on the site stay in the local index.
-- Creem: no real purchase yet. Activation with a real key, and whether a Monthly key stops validating after the subscription is cancelled/expires (keys are set to never expire; if Creem doesn't disable them, add a `subscription.expired` webhook that deactivates the key).
+- Creem: a live purchase activated on the store build (Oct 28). Still unverified: whether a Monthly key stops validating after the subscription is cancelled/expires (keys are set to never expire; if Creem doesn't disable them, add a `subscription.expired` webhook that deactivates the key).
 - Creem account review: requested changes addressed by continuechat.coylin.com (pricing, /privacy, /terms); re-review requested Oct 18 (24–48 h).
 - Chrome Web Store: item `hnfljdcdnafgcmlcnpookacdfeboilmc` (v0.3.0, live Oct 28). It replaced the 0.2.2 item `icdcdncollaclgcjnolpolgddbjijndj`, whose listing is gone; the proxy still accepts both IDs. The site's install buttons link to the store listing (no more zip download), and the license proxy only accepts this extension ID (`ALLOWED_EXTENSION_IDS`). Unpacked/dev builds have other IDs and get 403 from the proxy — append their ID (comma-separated) and redeploy while testing Pro.
 - Storage lives in the background service worker (typed RPC, `src/shared/rpc.ts`); continue counter shared: 3/month total.
